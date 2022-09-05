@@ -1,10 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:EEL_Worlds_Launcher.ViewModels"
+        xmlns:vm="using:EELauncher.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
-        x:Class="EEL_Worlds_Launcher.Views.MainWindow"
+        x:Class="EELauncher.Views.MainWindow"
         Icon="/Assets/Cube.png"
         Title="EEL Worlds 3"
         WindowStartupLocation="CenterScreen"
@@ -15,7 +15,23 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid>
+    <Grid RowDefinitions="*" ColumnDefinitions="Auto, *, 50">
+        <Grid Grid.Column="0" RowDefinitions="Auto, Auto">
+            <Image Grid.Row="0" Source="avares://EELauncher/Assets/Logo.png" Width="300" Height="300" Margin="50"/>
+            <Button Grid.Row="1" Width="250" Height="50" Background="Green" Foreground="White" HorizontalAlignment="Center" FontSize="28">Зайти на сервер</Button>
+        </Grid>
+        <Grid Grid.Column="1" RowDefinitions="400, Auto, Auto">
+            <Carousel Width="400" Height="350" Grid.Row="0" Name="carousel" Grid.Column="1">
+                <Carousel.PageTransition>
+                      <PageSlide Duration="0.25" Orientation="Vertical" />
+                </Carousel.PageTransition>
+                    <Image Source="avares://EELauncher/Assets/NewsExample.png"/>
+            </Carousel>
+            <TextBlock Margin="-100" Background="#000000" Foreground="White" Height="50" Grid.Row="1" Width="400">Дополнительные отверстия</TextBlock>
+        </Grid>
+        <Grid Grid.Column="2" RowDefinitions="Auto, Auto, Auto" Background="#000000">
+        </Grid>
+
         
     </Grid>
 </Window>

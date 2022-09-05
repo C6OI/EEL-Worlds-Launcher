@@ -1,4 +1,4 @@
-﻿namespace EEL_Worlds_Launcher.ViewModels {
+﻿namespace EELauncher.ViewModels {
     public class MainWindowViewModel : ViewModelBase {
         public string Greeting => "Welcome to Avalonia!";
     }

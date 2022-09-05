@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using EEL_Worlds_Launcher.ViewModels;
-using EEL_Worlds_Launcher.Views;
+using EELauncher.ViewModels;
+using EELauncher.Views;
 
-namespace EEL_Worlds_Launcher
+namespace EELauncher
 {
     public partial class App : Application
     {

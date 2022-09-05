@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
 
-namespace EEL_Worlds_Launcher.ViewModels {
+namespace EELauncher.ViewModels {
     public class ViewModelBase : ReactiveObject {}
 }

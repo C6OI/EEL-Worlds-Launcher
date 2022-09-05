@@ -5,7 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace EEL_Worlds_Launcher.Views {
+namespace EELauncher.Views {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
@@ -16,8 +16,8 @@ namespace EEL_Worlds_Launcher.Views {
             IAssetLoader assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!;
             
             string[] backgrounds = {
-                @"avares://EEL Worlds Launcher/Assets/Background_1.png",
-                @"avares://EEL Worlds Launcher/Assets/Background_2.png"
+                @"avares://EELauncher/Assets/Background_1.png",
+                @"avares://EELauncher/Assets/Background_2.png"
             };
 
             Random random = new();

@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using EEL_Worlds_Launcher.ViewModels;
+using EELauncher.ViewModels;
 
-namespace EEL_Worlds_Launcher {
+namespace EELauncher {
     public class ViewLocator : IDataTemplate {
         public IControl Build(object data) {
             string name = data.GetType().FullName!.Replace("ViewModel", "View");
