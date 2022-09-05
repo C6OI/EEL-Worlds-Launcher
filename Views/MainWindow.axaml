@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EEL_Worlds_Launcher.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
+        x:Class="EEL_Worlds_Launcher.Views.MainWindow"
+        Icon="/Assets/Cube.png"
+        Title="EEL Worlds 3"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Initialized="OnInitialized">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid>
+        
+    </Grid>
+</Window>
