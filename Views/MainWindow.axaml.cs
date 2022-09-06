@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using EELauncher.Extensions;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
@@ -35,6 +37,12 @@ namespace EELauncher.Views {
             textBlock.Text = "Раздача на спувне бесплатные шалкеры awawa!!\n" +
                              "Вчера я съел угря\n" +
                              "Что такое galnet и где кошкодевочки\n";
+        }
+        
+        void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
+            Image image = (Image)sender!;
+
+            "http://eelworlds.ml/news/coming-soon".OpenUrl();
         }
         
         void PlayButtonEnter(object? sender, PointerEventArgs e) {

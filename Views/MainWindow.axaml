@@ -34,7 +34,9 @@
                 <Carousel.PageTransition>
                       <PageSlide Duration="0.25" Orientation="Vertical" />
                 </Carousel.PageTransition>
-                    <Image Source="avares://EELauncher/Assets/NewsExample.png"/>
+                    <Image Source="avares://EELauncher/Assets/NewsExample.png"
+                           Name="NewsImage"
+                           PointerPressed="NewsImage_OnPointerPressed"/>
             </Carousel>
             <!-- <TextBlock Margin="-100" Background="#000000" Foreground="White" Height="50" Grid.Row="1" Width="400">Дополнительные отверстия</TextBlock> -->
             <TextBlock Grid.Row="1"
@@ -45,7 +47,8 @@
                        Opacity="0.7"
                        TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                        Padding="5"
-                       Initialized="NewsShortBlock_OnInitialized">
+                       Initialized="NewsShortBlock_OnInitialized"
+                       LineHeight="18">
             </TextBlock>
         </Grid>
             <Grid Grid.Column="2" Background="#000000"
