@@ -81,5 +81,13 @@ namespace EELauncher.Views {
 
             process.Start();
         }
+
+        void CloseButton_OnClick(object? sender, RoutedEventArgs e) {
+            Close();
+        }
+
+        void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
+            throw new NotImplementedException();
+        }
     }
 }

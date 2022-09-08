@@ -9,59 +9,124 @@
         Title="EEL Worlds 3"
         WindowStartupLocation="CenterScreen"
         CanResize="False"
-        Initialized="OnInitialized">
+        Initialized="OnInitialized"
+        SystemDecorations="BorderOnly">
 
     <Design.DataContext>
+        
         <vm:MainWindowViewModel/>
+        
     </Design.DataContext>
 
-    <Grid RowDefinitions="*" ColumnDefinitions="Auto, Auto, *">
-        <Grid Grid.Column="0" RowDefinitions="Auto, Auto">
-            <Image Grid.Row="0" Source="avares://EELauncher/Assets/Logo.png" Width="300" Height="300" Margin="50"/>
-            <Button Grid.Row="1"
-                    Width="200" Height="75"
-                    HorizontalAlignment="Center"
-                    PointerEnter="PlayButtonEnter"
-                    PointerLeave="PlayButtonLeave"
-                    CornerRadius="15"
-                    Name="PlayButton"
-                    Click="PlayButton_OnClick">
-                <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform"/>
+    <Grid RowDefinitions="30, *">
+        
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *, Auto"
+              Background="#000000"
+              Opacity="0.75">
+            
+            <TextBlock Grid.Column="0" Name="LauncherName"
+                       Foreground="#FFFFFF"
+                       HorizontalAlignment="Left"
+                       Padding="10, 6"
+                       FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
+                       FontSize="14">
+                
+                EELauncher 1.0
+                
+            </TextBlock>
+                        
+            <Button Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Name="MinimizeButton"
+                    Click="MinimizeButton_OnClick">
+                
+                ➖
+                
+            </Button>
+            
+            <Button Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    Name="CloseButton"
+                    Click="CloseButton_OnClick">
+                
+                ❌
+                
             </Button>
         </Grid>
         
-        <TextBox Grid.Column="0" VerticalAlignment="Bottom" Width="150" Margin="15" Name="NicknameField"/>
-        
-        <Grid Grid.Column="1" RowDefinitions="400, Auto, Auto">
-            <Carousel Grid.Row="0"
-                Width="400" Height="350"
-                Name="Carousel">
-                <Carousel.PageTransition>
-                      <PageSlide Duration="0.25" Orientation="Vertical"/>
-                </Carousel.PageTransition>
-                    <Image Source="avares://EELauncher/Assets/NewsExample.png"
-                           Name="NewsImage"
-                           PointerPressed="NewsImage_OnPointerPressed"/>
-            </Carousel>
+        <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, *">
             
-            <TextBlock Grid.Row="1"
-                       Width="400" Height="75"
-                       VerticalAlignment="Top"
-                       Background="#000000"
-                       Foreground="#FFFFFF"
-                       Opacity="0.7"
-                       TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
-                       Padding="5"
-                       Name="NewsDescription"
-                       Initialized="NewsDescription_OnInitialized"
-                       LineHeight="18">
-            </TextBlock>
+            <Grid Grid.Column="0"
+                  RowDefinitions="Auto, Auto">
+                
+                <Image Grid.Row="0" Source="avares://EELauncher/Assets/Logo.png"
+                       Width="275" Height="275" Margin="50"/>
+                
+                <Button Grid.Row="1"
+                        Width="200" Height="75"
+                        HorizontalAlignment="Center"
+                        PointerEnter="PlayButtonEnter"
+                        PointerLeave="PlayButtonLeave"
+                        CornerRadius="15"
+                        Name="PlayButton"
+                        Click="PlayButton_OnClick">
+                    
+                    <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform"/>
+                    
+                </Button>
+                
+            </Grid>
             
-        </Grid>
-            <Grid Grid.Row="0" Grid.Column="2" Background="#000000"
-                  Width="50"
-                  HorizontalAlignment="Right"
-                  Opacity="0.5">
+            <TextBox Grid.Column="0"
+                     VerticalAlignment="Bottom"
+                     Width="150" Margin="15"
+                     Name="NicknameField"/>
+            
+            <Grid Grid.Column="1"
+                  RowDefinitions="400, Auto, Auto">
+                
+                <Carousel Grid.Row="0"
+                          Width="400" Height="350"
+                          Name="Carousel">
+                    
+                    <Carousel.PageTransition>
+                        
+                        <PageSlide Duration="0.25" Orientation="Vertical"/>
+                        
+                    </Carousel.PageTransition>
+                    
+                        <Image Source="avares://EELauncher/Assets/NewsExample.png"
+                               Name="NewsImage"
+                               PointerPressed="NewsImage_OnPointerPressed"/>
+                        
+                </Carousel>
+                
+                <TextBlock Grid.Row="1"
+                           Width="400" Height="75"
+                           VerticalAlignment="Top"
+                           Background="#000000" Foreground="#FFFFFF"
+                           Opacity="0.7"
+                           TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                           Padding="7, 5"
+                           Name="NewsDescription"
+                           Initialized="NewsDescription_OnInitialized"
+                           LineHeight="18"
+                           FontFamily="Calibri">
+                    
+                </TextBlock>
+                
+            </Grid>
+            
+                <Grid Grid.Row="0" Grid.Column="2"
+                      Background="#000000"
+                      Width="50"
+                      HorizontalAlignment="Right"
+                      Opacity="0.5">
+                    
+                </Grid>
+            
         </Grid>
     </Grid>
+    
 </Window>
