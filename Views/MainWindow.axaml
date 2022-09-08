@@ -23,22 +23,27 @@
                     HorizontalAlignment="Center"
                     PointerEnter="PlayButtonEnter"
                     PointerLeave="PlayButtonLeave"
-                    CornerRadius="15">
+                    CornerRadius="15"
+                    Name="PlayButton"
+                    Click="PlayButton_OnClick">
                 <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform"/>
             </Button>
         </Grid>
+        
+        <TextBox Grid.Column="0" VerticalAlignment="Bottom" Width="150" Margin="15" Name="NicknameField"/>
+        
         <Grid Grid.Column="1" RowDefinitions="400, Auto, Auto">
             <Carousel Grid.Row="0"
                 Width="400" Height="350"
                 Name="Carousel">
                 <Carousel.PageTransition>
-                      <PageSlide Duration="0.25" Orientation="Vertical" />
+                      <PageSlide Duration="0.25" Orientation="Vertical"/>
                 </Carousel.PageTransition>
                     <Image Source="avares://EELauncher/Assets/NewsExample.png"
                            Name="NewsImage"
                            PointerPressed="NewsImage_OnPointerPressed"/>
             </Carousel>
-            <!-- <TextBlock Margin="-100" Background="#000000" Foreground="White" Height="50" Grid.Row="1" Width="400">Дополнительные отверстия</TextBlock> -->
+            
             <TextBlock Grid.Row="1"
                        Width="400" Height="75"
                        VerticalAlignment="Top"
@@ -47,11 +52,13 @@
                        Opacity="0.7"
                        TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                        Padding="5"
-                       Initialized="NewsShortBlock_OnInitialized"
+                       Name="NewsDescription"
+                       Initialized="NewsDescription_OnInitialized"
                        LineHeight="18">
             </TextBlock>
+            
         </Grid>
-            <Grid Grid.Column="2" Background="#000000"
+            <Grid Grid.Row="0" Grid.Column="2" Background="#000000"
                   Width="50"
                   HorizontalAlignment="Right"
                   Opacity="0.5">
