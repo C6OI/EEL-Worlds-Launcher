@@ -28,7 +28,7 @@ namespace EELauncher.Views {
             ServicePointManager.DefaultConnectionLimit = 256;
         }
 
-        public void OnInitialized(object? sender, EventArgs e) {
+        void OnInitialized(object? sender, EventArgs e) {
             string[] backgrounds = {
                 @"avares://EELauncher/Assets/Background_1.png",
                 @"avares://EELauncher/Assets/Background_2.png"
@@ -42,7 +42,7 @@ namespace EELauncher.Views {
             Background = bg;
         }
         
-        public void NewsDescription_OnInitialized(object? sender, EventArgs e) {
+        void NewsDescription_OnInitialized(object? sender, EventArgs e) {
             TextBlock textBlock = (TextBlock)sender!;
             
             textBlock.Text = "Раздача на спувне бесплатные шалкеры awawa!!\n" +
@@ -58,6 +58,7 @@ namespace EELauncher.Views {
         
         void PlayButtonEnter(object? sender, PointerEventArgs e) {
             Button button = (Button)sender!;
+            
             Image enterButtonImage = new() {
                 Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Play_Button_Pressed.png")))
             };
@@ -95,6 +96,46 @@ namespace EELauncher.Views {
         void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
             if (e.Pointer.IsPrimary)
                 BeginMoveDrag(e);
+        }
+
+        void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) {
+            Button button = (Button)sender!;
+
+            Image enterButtonImage = new() {
+                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Minimize_Pressed.png")))
+            };
+
+            button.Content = enterButtonImage;
+        }
+
+        void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) {
+            Button button = (Button)sender!;
+
+            Image enterButtonImage = new() {
+                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Minimize_Normal.png")))
+            };
+
+            button.Content = enterButtonImage;
+        }
+
+        void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) {
+            Button button = (Button)sender!;
+
+            Image enterButtonImage = new() {
+                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Close_Pressed.png")))
+            };
+
+            button.Content = enterButtonImage;
+        }
+
+        void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) {
+            Button button = (Button)sender!;
+
+            Image enterButtonImage = new() {
+                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Close_Normal.png")))
+            };
+
+            button.Content = enterButtonImage;
         }
     }
 }

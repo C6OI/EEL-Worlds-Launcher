@@ -18,10 +18,10 @@
         
     </Design.DataContext>
 
-    <Grid RowDefinitions="30, *">
+    <Grid RowDefinitions="40, *">
         
         <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, *, Auto"
+              ColumnDefinitions="Auto, *"
               Background="#000000"
               Opacity="0.75"
               Name="Header"
@@ -30,7 +30,7 @@
             <TextBlock Grid.Column="0" Name="LauncherName"
                        Foreground="#FFFFFF"
                        HorizontalAlignment="Left"
-                       Padding="10, 6"
+                       Padding="10, 12"
                        FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
                        FontSize="14"
                        Focusable="False">
@@ -39,23 +39,40 @@
                 
             </TextBlock>
                         
-            <Button Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Name="MinimizeButton"
-                    Click="MinimizeButton_OnClick">
+            <Grid Grid.Column="1"
+                  ColumnDefinitions="42, 42"
+                  HorizontalAlignment="Right">
                 
-                ➖
+                <Button Grid.Column="0"
+                        Name="MinimizeButton"
+                        Click="MinimizeButton_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="-4"
+                        HorizontalAlignment="Right"
+                        PointerEnter="MinimizeButton_OnPointerEnter"
+                        PointerLeave="MinimizeButton_OnPointerLeave">
                 
-            </Button>
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png"/>
+                
+                </Button>
             
-            <Button Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    Name="CloseButton"
-                    Click="CloseButton_OnClick">
+                <Button Grid.Column="1"
+                        Name="CloseButton"
+                        Click="CloseButton_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="-4"
+                        HorizontalAlignment="Right"
+                        PointerEnter="CloseButton_OnPointerEnter"
+                        PointerLeave="CloseButton_OnPointerLeave">
                 
-                ❌
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png"/>
                 
-            </Button>
+                </Button>
+            </Grid>
         </Grid>
         
         <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, *">
