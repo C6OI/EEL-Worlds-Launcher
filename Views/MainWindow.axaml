@@ -23,14 +23,17 @@
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *, Auto"
               Background="#000000"
-              Opacity="0.75">
+              Opacity="0.75"
+              Name="Header"
+              PointerPressed="Header_OnPointerPressed">
             
             <TextBlock Grid.Column="0" Name="LauncherName"
                        Foreground="#FFFFFF"
                        HorizontalAlignment="Left"
                        Padding="10, 6"
                        FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
-                       FontSize="14">
+                       FontSize="14"
+                       Focusable="False">
                 
                 EELauncher 1.0
                 

@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -87,7 +89,12 @@ namespace EELauncher.Views {
         }
 
         void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
-            throw new NotImplementedException();
+            WindowState = WindowState.Minimized;
+        }
+
+        void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
+            if (e.Pointer.IsPrimary)
+                BeginMoveDrag(e);
         }
     }
 }
