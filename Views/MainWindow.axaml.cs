@@ -1,9 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -13,6 +11,11 @@ using Avalonia.Platform;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
 using EELauncher.Extensions;
+using MessageBox.Avalonia;
+using MessageBox.Avalonia.BaseWindows.Base;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
@@ -53,7 +56,7 @@ namespace EELauncher.Views {
         }
         
         void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-            "http://eelworlds.ml/news/coming-soon".OpenUrl();
+            "https://eelworlds.ml/news/coming-soon".OpenUrl();
         }
         
         void PlayButtonEnter(object? sender, PointerEventArgs e) {
@@ -136,6 +139,45 @@ namespace EELauncher.Views {
             };
 
             button.Content = enterButtonImage;
+        }
+
+        void SiteButton_OnClick(object? sender, RoutedEventArgs e) {
+            "https://eelworlds.ml/".OpenUrl();
+        }
+
+
+        void DiscordButton_OnClick(object? sender, RoutedEventArgs e) {
+            "https://discord.gg/Nt9chgHxQ6".OpenUrl();
+        }
+
+        void YouTubeButton_OnClick(object? sender, RoutedEventArgs e) {
+            MessageBoxStandardParams mBoxParams = new() {
+                ContentTitle = "404 Not Found",
+                ContentMessage = "We aren't have an YouTube channel yet",
+                WindowIcon = Icon,
+                Icon = MessageBox.Avalonia.Enums.Icon.Error,
+                ShowInCenter = true,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            
+            IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
+
+            mBox.Show();
+        }
+
+        void VkButton_OnClick(object? sender, RoutedEventArgs e) {
+            MessageBoxStandardParams mBoxParams = new() {
+                ContentTitle = "404 Not Found",
+                ContentMessage = "We aren't have an VK group yet",
+                WindowIcon = Icon,
+                Icon = MessageBox.Avalonia.Enums.Icon.Error,
+                ShowInCenter = true,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            
+            IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
+
+            mBox.Show();
         }
     }
 }

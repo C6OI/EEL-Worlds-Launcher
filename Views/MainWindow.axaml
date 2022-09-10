@@ -20,10 +20,8 @@
 
     <Grid RowDefinitions="40, *">
         
-        <Grid Grid.Row="0"
-              ColumnDefinitions="Auto, *"
-              Background="#000000"
-              Opacity="0.75"
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
+              Background="#1a1a1a"
               Name="Header"
               PointerPressed="Header_OnPointerPressed">
             
@@ -35,7 +33,7 @@
                        FontSize="14"
                        Focusable="False">
                 
-                EELauncher 1.0
+                    EELauncher 1.0
                 
             </TextBlock>
                         
@@ -72,7 +70,9 @@
                     <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png"/>
                 
                 </Button>
+                    
             </Grid>
+            
         </Grid>
         
         <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, *">
@@ -108,7 +108,8 @@
                 
                 <Carousel Grid.Row="0"
                           Width="400" Height="350"
-                          Name="Carousel">
+                          Name="Carousel"
+                          Margin="0, 0, 0, 30">
                     
                     <Carousel.PageTransition>
                         
@@ -116,9 +117,9 @@
                         
                     </Carousel.PageTransition>
                     
-                        <Image Source="avares://EELauncher/Assets/NewsExample.png"
-                               Name="NewsImage"
-                               PointerPressed="NewsImage_OnPointerPressed"/>
+                    <Image Source="avares://EELauncher/Assets/NewsExample.png"
+                           Name="NewsImage"
+                           PointerPressed="NewsImage_OnPointerPressed"/>
                         
                 </Carousel>
                 
@@ -132,21 +133,96 @@
                            Name="NewsDescription"
                            Initialized="NewsDescription_OnInitialized"
                            LineHeight="18"
-                           FontFamily="Calibri">
+                           FontFamily="Calibri"
+                           Margin="0, -90">
                     
                 </TextBlock>
                 
             </Grid>
             
                 <Grid Grid.Row="0" Grid.Column="2"
+                      RowDefinitions="10, 50,
+                                      10, 50,
+                                      10, 50,
+                                      10, 50,
+                                      145, 50,
+                                      10, 50, 5"
                       Background="#000000"
-                      Width="50"
+                      Width="60"
                       HorizontalAlignment="Right"
-                      Opacity="0.5">
+                      Opacity="0.75">
+                    
+                    <Button Grid.Row="1"
+                            Name="SiteButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Opacity="1"
+                            Click="SiteButton_OnClick">
+                        
+                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Site.png"/>
+                        
+                    </Button>
+                    
+                    <Button Grid.Row="3"
+                            Name="DiscordButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Opacity="1"
+                            Click="DiscordButton_OnClick">
+                        
+                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Discord.png"/>
+                        
+                    </Button>
+                    
+                    <Button Grid.Row="5"
+                            Name="YouTubeButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Click="YouTubeButton_OnClick">
+                        
+                        <Image Width="53" Height="53" Source="avares://EELauncher/Assets/YouTube.png"/>
+                        
+                    </Button>
+                    
+                    <Button Grid.Row="7"
+                            Name="VkButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Click="VkButton_OnClick">
+                        
+                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/VK.png"/>
+                        
+                    </Button>
+                    
+                    <Button Grid.Row="9"
+                            Name="SettingsButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            VerticalAlignment="Bottom">
+                        
+                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Settings.png"/>
+                        
+                    </Button> 
+                    
+                    <Button Grid.Row="11"
+                            Name="LogoutButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent">
+                        
+                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Logout.png"/>
+                        
+                    </Button>   
                     
                 </Grid>
             
         </Grid>
+        
     </Grid>
     
 </Window>
