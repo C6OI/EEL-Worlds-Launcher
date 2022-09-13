@@ -1,21 +1,17 @@
 using System;
-using System.Diagnostics;
 using System.Net;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CmlLib.Core;
-using CmlLib.Core.Auth;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
@@ -32,17 +28,7 @@ namespace EELauncher.Views {
         }
 
         void OnInitialized(object? sender, EventArgs e) {
-            string[] backgrounds = {
-                @"avares://EELauncher/Assets/Background_1.png",
-                @"avares://EELauncher/Assets/Background_2.png"
-            };
-
-            Random random = new();
-            string bgUri = backgrounds[random.Next(0, backgrounds.Length)];
-            
-            ImageBrush bg = new(new Bitmap(_assets.Open(new Uri(bgUri))));
-            
-            Background = bg;
+            Background = WindowExtensions.RandomBackground();
         }
         
         void NewsDescription_OnInitialized(object? sender, EventArgs e) {
@@ -77,15 +63,6 @@ namespace EELauncher.Views {
             };
 
             button.Content = leaveButtonImage;
-        }
-
-        async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
-            Process process = await _launcher.CreateProcessAsync("1.19.2", new MLaunchOption {
-                MaximumRamMb = 2048,
-                Session = MSession.GetOfflineSession(NicknameField.Text),
-            });
-
-            process.Start();
         }
 
         void CloseButton_OnClick(object? sender, RoutedEventArgs e) {

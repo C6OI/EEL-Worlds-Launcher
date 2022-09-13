@@ -89,19 +89,13 @@
                         PointerEnter="PlayButtonEnter"
                         PointerLeave="PlayButtonLeave"
                         CornerRadius="15"
-                        Name="PlayButton"
-                        Click="PlayButton_OnClick">
+                        Name="PlayButton">
                     
                     <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform"/>
                     
                 </Button>
                 
             </Grid>
-            
-            <TextBox Grid.Column="0"
-                     VerticalAlignment="Bottom"
-                     Width="150" Margin="15"
-                     Name="NicknameField"/>
             
             <Grid Grid.Column="1"
                   RowDefinitions="400, Auto, Auto">

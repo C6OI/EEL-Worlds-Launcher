@@ -13,13 +13,14 @@ namespace EELauncher
             AvaloniaXamlLoader.Load(this);
         }
 
+        // main window changed
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
+                desktop.MainWindow = new EntranceWindow()
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new EntranceWindowViewModel(),
                 };
             }
 

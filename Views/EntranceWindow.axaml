@@ -1,0 +1,128 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
+        x:Class="EELauncher.Views.EntranceWindow"
+        Icon="/Assets/Cube.png"
+        Title="EEL Worlds 3"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Initialized="OnInitialized"
+        SystemDecorations="BorderOnly">
+
+    <Grid RowDefinitions="40, 200, *">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
+              Background="#1a1a1a"
+              Name="Header"
+              PointerPressed="Header_OnPointerPressed">
+
+            <TextBlock Grid.Column="0" Name="LauncherName"
+                       Foreground="#FFFFFF"
+                       HorizontalAlignment="Left"
+                       Padding="10, 12"
+                       FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
+                       FontSize="14"
+                       Focusable="False">
+
+                EELauncher 1.0
+
+            </TextBlock>
+
+            <Grid Grid.Column="1"
+                  ColumnDefinitions="42, 42"
+                  HorizontalAlignment="Right">
+
+                <Button Grid.Column="0"
+                        Name="MinimizeButton"
+                        Click="MinimizeButton_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="-4"
+                        HorizontalAlignment="Right"
+                        PointerEnter="MinimizeButton_OnPointerEnter"
+                        PointerLeave="MinimizeButton_OnPointerLeave">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png" />
+
+                </Button>
+
+                <Button Grid.Column="1"
+                        Name="CloseButton"
+                        Click="CloseButton_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="-4"
+                        HorizontalAlignment="Right"
+                        PointerEnter="CloseButton_OnPointerEnter"
+                        PointerLeave="CloseButton_OnPointerLeave">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png" />
+
+                </Button>
+
+            </Grid>
+
+        </Grid>
+
+        <Panel Grid.Row="1" Background="#000000" Opacity=".5"/>
+        <Image Grid.Row="1" Source="avares://EELauncher/Assets/Logo.png" />
+        
+        <Panel Grid.Row="2" Background="#000000" Opacity=".5"/>
+        <Grid Grid.Row="2"
+              Name="Login"
+              RowDefinitions="Auto, Auto, Auto, Auto, *">
+
+            <TextBlock Grid.Row="0"
+                       HorizontalAlignment="Center"
+                       FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                       Text="Авторизация"
+                       FontSize="20"
+                       Padding="12.5"/>
+            
+            <TextBox Grid.Row="1"
+                     Name="NicknameField"
+                     Width="250"
+                     GotFocus="NicknameField_OnGotFocus"
+                     LostFocus="NicknameField_OnLostFocus"
+                     FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                     Text="Nickname"/>
+            
+            <TextBox Grid.Row="2"
+                     Name="PasswordField"
+                     Width="250"
+                     Margin="10"
+                     GotFocus="PasswordField_OnGotFocus"
+                     LostFocus="PasswordField_OnLostFocus"
+                     FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                     Text="Password"/>
+            
+            <Button Grid.Row="3"
+                    Name="LoginButton"
+                    Width="250"
+                    HorizontalAlignment="Center"
+                    Content="Login"
+                    FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                    Click="LoginButton_OnClick"/>
+            
+            <Button Grid.Row="4"
+                    Name="ForgorButton"
+                    HorizontalAlignment="Center"
+                    Margin="0, 5, 117, 0"
+                    VerticalAlignment="Top"
+                    Content="Forgot password?"
+                    FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="ForgorButton_OnClick"/>
+            
+        </Grid>
+
+    </Grid>
+
+</Window>
