@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -6,17 +8,17 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
+using Newtonsoft.Json;
 
 namespace EELauncher.Views; 
 
 public partial class EntranceWindow : Window {
-    readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!; 
-    
     public EntranceWindow() {
         InitializeComponent();
 #if DEBUG
@@ -26,10 +28,27 @@ public partial class EntranceWindow : Window {
 
     void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+        WireControls();
         
         ClientSize = new Size(960, 540);
+        NicknameField.Text = "Nickname";
+        PasswordField.Text = "Password";
     }
 
+    void WireControls() {
+        Header = this.FindControl<Grid>("Header");
+        LauncherName = this.FindControl<TextBlock>("LauncherName");
+        MinimizeButton = this.FindControl<Button>("MinimizeButton");
+        CloseButton = this.FindControl<Button>("CloseButton");
+        Login = this.FindControl<Grid>("Login");
+        NicknameField = this.FindControl<TextBox>("NicknameField");
+        PasswordField = this.FindControl<TextBox>("PasswordField");
+        LoginButton = this.FindControl<Button>("LoginButton");
+        ForgorButton = this.FindControl<Button>("ForgorButton");
+    }
+
+    readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!;
+    
     void OnInitialized(object? sender, EventArgs e) {
         Background = WindowExtensions.RandomBackground();
     }
@@ -104,8 +123,41 @@ public partial class EntranceWindow : Window {
     }
     
     void LoginButton_OnClick(object? sender, RoutedEventArgs e) {
-        MainWindow launcher = new();
-        launcher.Show();
+        MessageBoxStandardParams mBoxParams = new() {
+            WindowIcon = Icon,
+            Icon = MessageBox.Avalonia.Enums.Icon.Question,
+            ShowInCenter = true,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen
+        };
+        
+        if (NicknameField?.Text is null or "Nickname" || PasswordField?.Text is null or "Password") {
+            mBoxParams.ContentTitle = "ДАУН";
+            mBoxParams.ContentMessage = "ТЫ ДИБИЛ ВВЕДИ ДАНННЫЕ";
+            
+            MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
+
+            return;
+        }
+        
+        List<KeyValuePair<string, string>> authData = new() {
+            KeyValuePair.Create<string, string>("username", NicknameField.Text),
+            KeyValuePair.Create<string, string>("password", PasswordField.Text),
+            KeyValuePair.Create<string, string>("clientToken", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+            KeyValuePair.Create<string, string>("requestUser", "true")
+        };
+
+        ElybyAuthData data = JsonConvert.DeserializeObject<ElybyAuthData>(UrlExtensions.PostRequest("https://authserver.ely.by/auth/authenticate", authData));
+        StaticData.Data = data;
+
+        if (data.accessToken == null || data.selectedProfile.name == null) {
+            mBoxParams.ContentTitle = "Ошибка";
+            mBoxParams.ContentMessage = "Неверные данные";
+
+            MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
+            return;
+        }
+        
+        new MainWindow().Show();
         Close();
     }
 

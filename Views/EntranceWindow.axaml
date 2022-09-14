@@ -69,7 +69,7 @@
         </Grid>
 
         <Panel Grid.Row="1" Background="#000000" Opacity=".5"/>
-        <Image Grid.Row="1" Source="avares://EELauncher/Assets/Logo.png" />
+        <Image Grid.Row="1" Source="avares://EELauncher/Assets/Logo_200x200.png" />
         
         <Panel Grid.Row="2" Background="#000000" Opacity=".5"/>
         <Grid Grid.Row="2"
@@ -89,7 +89,8 @@
                      GotFocus="NicknameField_OnGotFocus"
                      LostFocus="NicknameField_OnLostFocus"
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
-                     Text="Nickname"/>
+                     TextWrapping="NoWrap"
+                     AcceptsReturn="False"/>
             
             <TextBox Grid.Row="2"
                      Name="PasswordField"
@@ -98,7 +99,8 @@
                      GotFocus="PasswordField_OnGotFocus"
                      LostFocus="PasswordField_OnLostFocus"
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
-                     Text="Password"/>
+                     TextWrapping="NoWrap"
+                     AcceptsReturn="False"/>
             
             <Button Grid.Row="3"
                     Name="LoginButton"

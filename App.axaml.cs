@@ -6,7 +6,7 @@ using EELauncher.Views;
 
 namespace EELauncher
 {
-    public partial class App : Application
+    public class App : Application
     {
         public override void Initialize()
         {
@@ -18,8 +18,7 @@ namespace EELauncher
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new EntranceWindow()
-                {
+                desktop.MainWindow = new EntranceWindow {
                     DataContext = new EntranceWindowViewModel(),
                 };
             }

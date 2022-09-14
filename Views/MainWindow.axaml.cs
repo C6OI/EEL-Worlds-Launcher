@@ -7,6 +7,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CmlLib.Core;
+using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.BaseWindows.Base;
@@ -25,6 +26,8 @@ namespace EELauncher.Views {
             InitializeComponent();
             ClientSize = new Size(960, 540);
             ServicePointManager.DefaultConnectionLimit = 256;
+
+            LauncherName.Text = $"EELauncher 1.0: Вы вошли как {StaticData.Data.selectedProfile.name}";
         }
 
         void OnInitialized(object? sender, EventArgs e) {
@@ -155,6 +158,10 @@ namespace EELauncher.Views {
             IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
 
             mBox.Show();
+        }
+
+        void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+
         }
     }
 }

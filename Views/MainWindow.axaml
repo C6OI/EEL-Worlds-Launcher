@@ -89,7 +89,8 @@
                         PointerEnter="PlayButtonEnter"
                         PointerLeave="PlayButtonLeave"
                         CornerRadius="15"
-                        Name="PlayButton">
+                        Name="PlayButton"
+                        Click="PlayButton_OnClick">
                     
                     <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform"/>
                     
