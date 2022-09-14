@@ -45,7 +45,7 @@
                         PointerEnter="MinimizeButton_OnPointerEnter"
                         PointerLeave="MinimizeButton_OnPointerLeave">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png" />
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png"/>
 
                 </Button>
 
@@ -60,7 +60,7 @@
                         PointerEnter="CloseButton_OnPointerEnter"
                         PointerLeave="CloseButton_OnPointerLeave">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png" />
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png"/>
 
                 </Button>
 
@@ -69,12 +69,12 @@
         </Grid>
 
         <Panel Grid.Row="1" Background="#000000" Opacity=".5"/>
-        <Image Grid.Row="1" Source="avares://EELauncher/Assets/Logo_200x200.png" />
-        
+        <Image Grid.Row="1" Source="avares://EELauncher/Assets/Logo_200x200.png"/>
+
         <Panel Grid.Row="2" Background="#000000" Opacity=".5"/>
         <Grid Grid.Row="2"
               Name="Login"
-              RowDefinitions="Auto, Auto, Auto, Auto, *">
+              RowDefinitions="Auto, Auto, Auto, Auto, Auto, *">
 
             <TextBlock Grid.Row="0"
                        HorizontalAlignment="Center"
@@ -82,7 +82,7 @@
                        Text="Авторизация"
                        FontSize="20"
                        Padding="12.5"/>
-            
+
             <TextBox Grid.Row="1"
                      Name="NicknameField"
                      Width="250"
@@ -91,7 +91,7 @@
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                      TextWrapping="NoWrap"
                      AcceptsReturn="False"/>
-            
+
             <TextBox Grid.Row="2"
                      Name="PasswordField"
                      Width="250"
@@ -101,7 +101,7 @@
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                      TextWrapping="NoWrap"
                      AcceptsReturn="False"/>
-            
+
             <Button Grid.Row="3"
                     Name="LoginButton"
                     Width="250"
@@ -109,20 +109,46 @@
                     Content="Login"
                     FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                     Click="LoginButton_OnClick"/>
-            
+
             <Button Grid.Row="4"
-                    Name="ForgorButton"
+                    Name="ForgotButton"
                     HorizontalAlignment="Center"
-                    Margin="0, 5, 117, 0"
                     VerticalAlignment="Top"
-                    Content="Forgot password?"
+                    Margin="0, 7, 105, 0"
                     FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                     HorizontalContentAlignment="Left"
                     BorderThickness="0"
                     Background="Transparent"
                     BorderBrush="Transparent"
-                    Click="ForgorButton_OnClick"/>
-            
+                    Click="ForgotButton_OnClick">
+
+                <Button.Template>
+                    <ControlTemplate>
+                        <TextBlock Text="Forgot password?"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Grid.Row="4"
+                    Name="NotRegistered"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="30, 7, -90, 0"
+                    FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="NotRegistered_OnClick">
+
+                <Button.Template>
+                    <ControlTemplate>
+                        <TextBlock Text="Not registered?"/>
+                    </ControlTemplate>
+                </Button.Template>
+
+            </Button>
+
         </Grid>
 
     </Grid>

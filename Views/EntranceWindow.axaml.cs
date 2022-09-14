@@ -44,7 +44,7 @@ public partial class EntranceWindow : Window {
         NicknameField = this.FindControl<TextBox>("NicknameField");
         PasswordField = this.FindControl<TextBox>("PasswordField");
         LoginButton = this.FindControl<Button>("LoginButton");
-        ForgorButton = this.FindControl<Button>("ForgorButton");
+        ForgotButton = this.FindControl<Button>("ForgotButton");
     }
 
     readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!;
@@ -161,7 +161,7 @@ public partial class EntranceWindow : Window {
         Close();
     }
 
-    void ForgorButton_OnClick(object? sender, RoutedEventArgs e) {
+    void ForgotButton_OnClick(object? sender, RoutedEventArgs e) {
         MessageBoxStandardParams mBoxParams = new() {
             ContentTitle = "жалк",
             ContentMessage = "вспоминай",
@@ -174,6 +174,10 @@ public partial class EntranceWindow : Window {
         IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
 
         mBox.Show();
+    }
+
+    void NotRegistered_OnClick(object? sender, RoutedEventArgs e) {
+        "https://account.ely.by/register".OpenUrl();
     }
 }
 
