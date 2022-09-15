@@ -130,10 +130,8 @@
                            Initialized="NewsDescription_OnInitialized"
                            LineHeight="18"
                            FontFamily="Calibri"
-                           Margin="0, -90">
-                    
-                </TextBlock>
-                
+                           Margin="0, -90" />
+
             </Grid>
             
                 <Grid Grid.Row="0" Grid.Column="2"

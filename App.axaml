@@ -1,13 +1,13 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:EELauncher"
-             xmlns:styling="clr-namespace:FluentAvalonia.Styling;assembly=FluentAvalonia"
+             xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="EELauncher.App">
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
     <Application.Styles>
-        <styling:FluentAvaloniaTheme />
+        <sty:FluentAvaloniaTheme RequestedTheme="Dark"/>
     </Application.Styles>
 </Application>

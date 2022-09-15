@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using Avalonia;
 using Avalonia.Controls;
@@ -22,11 +23,16 @@ namespace EELauncher.Views {
     public partial class MainWindow : Window {
         readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!; 
         readonly MinecraftPath _pathToMinecraft = new();
-        CMLauncher _launcher;
+        readonly CMLauncher _launcher;
+        readonly string _appData =
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData,
+                    Environment.SpecialFolderOption.Create), "EELauncher");
+        Process _minecraftProcess = null!;
         
         public MainWindow() {
             _launcher = new CMLauncher(_pathToMinecraft);
-            
+
             InitializeComponent();
             ClientSize = new Size(960, 540);
             ServicePointManager.DefaultConnectionLimit = 256;
@@ -46,6 +52,8 @@ namespace EELauncher.Views {
                              "Что такое galnet и где кошкодевочки\n";
 
             textBlock.Text = _launcher.MinecraftPath.BasePath;
+
+            textBlock.Text = _appData;
         }
         
         void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
@@ -73,7 +81,7 @@ namespace EELauncher.Views {
         }
 
         void CloseButton_OnClick(object? sender, RoutedEventArgs e) {
-            Close();
+            try { _minecraftProcess.Close(); } finally { Close(); }
         }
 
         void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -165,6 +173,11 @@ namespace EELauncher.Views {
         }
 
         async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+            Hide();
+            
+            List<Control> disabled = new() { PlayButton, SettingsButton };
+            disabled.ForEach(c => c.IsEnabled = false);
+            
             // todo: validating accessToken
             /*List<KeyValuePair<string, string>> validateData = new() {
                 KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken)
@@ -179,12 +192,18 @@ namespace EELauncher.Views {
                 ClientToken = data.clientToken
             };
 
-            Process minecraftProcess = await _launcher.CreateProcessAsync("1.19.2", new MLaunchOption {
+            _minecraftProcess = await _launcher.CreateProcessAsync("1.19.2", new MLaunchOption {
                 MaximumRamMb = 2048,
                 Session = session
             });
+            
+            _minecraftProcess.EnableRaisingEvents = true;
+            _minecraftProcess.Start();
 
-            minecraftProcess.Start();
+            _minecraftProcess.Exited += (s, a) => {
+                disabled.ForEach(c => c.IsEnabled = true);
+                Show();
+            };
         }
 
         void LogoutButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -195,8 +214,8 @@ namespace EELauncher.Views {
 
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/signout", data);
             
-            new EntranceWindow().Show();
-            Close();
+            try { _minecraftProcess.Close(); }
+            finally { new EntranceWindow().Show(); Close(); }
         }
 
         void OnClosing(object? sender, CancelEventArgs e) {
@@ -206,6 +225,8 @@ namespace EELauncher.Views {
             };
 
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
+            
+            try { _minecraftProcess.Close(); Program.ReleaseMemory(); } catch { /**/ }
         }
     }
 }
