@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Net;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,6 +10,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CmlLib.Core;
+using CmlLib.Core.Auth;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
@@ -160,8 +164,48 @@ namespace EELauncher.Views {
             mBox.Show();
         }
 
-        void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+        async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+            // todo: validating accessToken
+            /*List<KeyValuePair<string, string>> validateData = new() {
+                KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken)
+            };
 
+            string response = UrlExtensions.PostRequest("https://authserver.ely.by/auth/validate", validateData);*/
+
+            ElybyAuthData data = StaticData.Data;
+            SelectedProfile profile = data.selectedProfile;
+
+            MSession session = new(profile.name, data.accessToken, profile.id) {
+                ClientToken = data.clientToken
+            };
+
+            Process minecraftProcess = await _launcher.CreateProcessAsync("1.19.2", new MLaunchOption {
+                MaximumRamMb = 2048,
+                Session = session
+            });
+
+            minecraftProcess.Start();
+        }
+
+        void LogoutButton_OnClick(object? sender, RoutedEventArgs e) {
+            List<KeyValuePair<string, string>> data = new() {
+                KeyValuePair.Create<string, string>("username", StaticData.Data.selectedProfile.name),
+                KeyValuePair.Create<string, string>("password", StaticData.Password)
+            };
+
+            UrlExtensions.PostRequest("https://authserver.ely.by/auth/signout", data);
+            
+            new EntranceWindow().Show();
+            Close();
+        }
+
+        void OnClosing(object? sender, CancelEventArgs e) {
+            List<KeyValuePair<string, string>> data = new() {
+                KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken),
+                KeyValuePair.Create<string, string>("clientToken", StaticData.Data.clientToken)
+            };
+
+            UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
         }
     }
 }

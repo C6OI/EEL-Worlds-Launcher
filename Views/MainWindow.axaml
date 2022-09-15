@@ -10,6 +10,7 @@
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         Initialized="OnInitialized"
+        Closing="OnClosing"
         SystemDecorations="BorderOnly">
 
     <Design.DataContext>
@@ -208,7 +209,8 @@
                             Name="LogoutButton"
                             BorderThickness="0"
                             Background="Transparent"
-                            BorderBrush="Transparent">
+                            BorderBrush="Transparent"
+                            Click="LogoutButton_OnClick">
                         
                         <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Logout.png"/>
                         
