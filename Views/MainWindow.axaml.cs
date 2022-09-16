@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
+using CmlLib.Core.Downloader;
+using CmlLib.Core.Files;
+using CmlLib.Core.Installer.FabricMC;
+using CmlLib.Core.Version;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
@@ -21,9 +28,11 @@ using MessageBox.Avalonia.Enums;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
+        const string FabricVersion = "fabric-loader-0.14.9-1.19.2";
         readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!; 
         readonly MinecraftPath _pathToMinecraft = new();
         readonly CMLauncher _launcher;
+        readonly FabricVersionLoader _fabricLoader = new();
         readonly string _appData =
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData,
@@ -81,7 +90,7 @@ namespace EELauncher.Views {
         }
 
         void CloseButton_OnClick(object? sender, RoutedEventArgs e) {
-            try { _minecraftProcess.Close(); } finally { Close(); }
+            try { _minecraftProcess.Kill(); } finally { Close(); }
         }
 
         void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -136,8 +145,7 @@ namespace EELauncher.Views {
         void SiteButton_OnClick(object? sender, RoutedEventArgs e) {
             "https://eelworlds.ml/".OpenUrl();
         }
-
-
+        
         void DiscordButton_OnClick(object? sender, RoutedEventArgs e) {
             "https://discord.gg/Nt9chgHxQ6".OpenUrl();
         }
@@ -173,11 +181,19 @@ namespace EELauncher.Views {
         }
 
         async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
-            Hide();
-            
             List<Control> disabled = new() { PlayButton, SettingsButton };
             disabled.ForEach(c => c.IsEnabled = false);
+
+            _launcher.FileChanged += args => {
+                DownloadProgress.Maximum = args.TotalFileCount;
+                DownloadProgress.Value = args.ProgressedFileCount;
+            };
             
+            await (await _fabricLoader.GetVersionMetadatasAsync())
+                .GetVersionMetadata(FabricVersion)
+                .SaveAsync(_pathToMinecraft);
+            await _launcher.GetAllVersionsAsync();
+
             // todo: validating accessToken
             /*List<KeyValuePair<string, string>> validateData = new() {
                 KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken)
@@ -192,17 +208,23 @@ namespace EELauncher.Views {
                 ClientToken = data.clientToken
             };
 
-            _minecraftProcess = await _launcher.CreateProcessAsync("1.19.2", new MLaunchOption {
+            _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
                 Session = session
             });
             
+            Hide();
+
             _minecraftProcess.EnableRaisingEvents = true;
             _minecraftProcess.Start();
+            
+            DownloadProgress.Value = 0;
 
             _minecraftProcess.Exited += (s, a) => {
-                disabled.ForEach(c => c.IsEnabled = true);
-                Show();
+                Dispatcher.UIThread.InvokeAsync(() => {
+                    disabled.ForEach(c => c.IsEnabled = true);
+                    Show();
+                });
             };
         }
 
@@ -214,7 +236,7 @@ namespace EELauncher.Views {
 
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/signout", data);
             
-            try { _minecraftProcess.Close(); }
+            try { _minecraftProcess.Kill(); }
             finally { new EntranceWindow().Show(); Close(); }
         }
 
@@ -226,7 +248,7 @@ namespace EELauncher.Views {
 
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
             
-            try { _minecraftProcess.Close(); Program.ReleaseMemory(); } catch { /**/ }
+            try { _minecraftProcess.Kill(); Program.ReleaseMemory(); } catch { /**/ }
         }
     }
 }

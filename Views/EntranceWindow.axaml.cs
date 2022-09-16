@@ -11,9 +11,7 @@ using Avalonia.Platform;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
-using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
 
 namespace EELauncher.Views; 
@@ -131,11 +129,10 @@ public partial class EntranceWindow : Window {
         };
         
         if (NicknameField?.Text is null or "Nickname" || PasswordField?.Text is null or "Password") {
-            mBoxParams.ContentTitle = "ДАУН";
-            mBoxParams.ContentMessage = "ТЫ ДИБИЛ ВВЕДИ ДАНННЫЕ";
+            mBoxParams.ContentTitle = "Ошибка";
+            mBoxParams.ContentMessage = "Заполните все поля";
             
             MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
-
             return;
         }
         
@@ -162,18 +159,7 @@ public partial class EntranceWindow : Window {
     }
 
     void ForgotButton_OnClick(object? sender, RoutedEventArgs e) {
-        MessageBoxStandardParams mBoxParams = new() {
-            ContentTitle = "жалк",
-            ContentMessage = "вспоминай",
-            WindowIcon = Icon,
-            Icon = MessageBox.Avalonia.Enums.Icon.Question,
-            ShowInCenter = true,
-            WindowStartupLocation = WindowStartupLocation.CenterScreen
-        };
-            
-        IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
-
-        mBox.Show();
+        "https://account.ely.by/forgot-password".OpenUrl();
     }
 
     void NotRegistered_OnClick(object? sender, RoutedEventArgs e) {

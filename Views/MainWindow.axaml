@@ -14,18 +14,18 @@
         SystemDecorations="BorderOnly">
 
     <Design.DataContext>
-        
-        <vm:MainWindowViewModel/>
-        
+
+        <vm:MainWindowViewModel />
+
     </Design.DataContext>
 
     <Grid RowDefinitions="40, *">
-        
+
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
               Background="#1a1a1a"
               Name="Header"
               PointerPressed="Header_OnPointerPressed">
-            
+
             <TextBlock Grid.Column="0" Name="LauncherName"
                        Foreground="#FFFFFF"
                        HorizontalAlignment="Left"
@@ -33,15 +33,15 @@
                        FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
                        FontSize="14"
                        Focusable="False">
-                
-                    EELauncher 1.0
-                
+
+                EELauncher 1.0
+
             </TextBlock>
-                        
+
             <Grid Grid.Column="1"
                   ColumnDefinitions="42, 42"
                   HorizontalAlignment="Right">
-                
+
                 <Button Grid.Column="0"
                         Name="MinimizeButton"
                         Click="MinimizeButton_OnClick"
@@ -52,11 +52,11 @@
                         HorizontalAlignment="Right"
                         PointerEnter="MinimizeButton_OnPointerEnter"
                         PointerLeave="MinimizeButton_OnPointerLeave">
-                
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png"/>
-                
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png" />
+
                 </Button>
-            
+
                 <Button Grid.Column="1"
                         Name="CloseButton"
                         Click="CloseButton_OnClick"
@@ -67,157 +67,173 @@
                         HorizontalAlignment="Right"
                         PointerEnter="CloseButton_OnPointerEnter"
                         PointerLeave="CloseButton_OnPointerLeave">
-                
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png"/>
-                
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png" />
+
                 </Button>
-                    
-            </Grid>
-            
-        </Grid>
-        
-        <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, *">
-            
-            <Grid Grid.Column="0"
-                  RowDefinitions="Auto, Auto">
-                
-                <Image Grid.Row="0" Source="avares://EELauncher/Assets/Logo.png"
-                       Width="275" Height="275" Margin="50"/>
-                
-                <Button Grid.Row="1"
-                        Width="200" Height="75"
-                        HorizontalAlignment="Center"
-                        PointerEnter="PlayButtonEnter"
-                        PointerLeave="PlayButtonLeave"
-                        CornerRadius="15"
-                        Name="PlayButton"
-                        Click="PlayButton_OnClick">
-                    
-                    <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform"/>
-                    
-                </Button>
-                
-            </Grid>
-            
-            <Grid Grid.Column="1"
-                  RowDefinitions="400, Auto, Auto">
-                
-                <Carousel Grid.Row="0"
-                          Width="400" Height="350"
-                          Name="Carousel"
-                          Margin="0, 0, 0, 30">
-                    
-                    <Carousel.PageTransition>
-                        
-                        <PageSlide Duration="0.25" Orientation="Vertical"/>
-                        
-                    </Carousel.PageTransition>
-                    
-                    <Image Source="avares://EELauncher/Assets/NewsExample.png"
-                           Name="NewsImage"
-                           PointerPressed="NewsImage_OnPointerPressed"/>
-                        
-                </Carousel>
-                
-                <TextBlock Grid.Row="1"
-                           Width="400" Height="75"
-                           VerticalAlignment="Top"
-                           Background="#000000" Foreground="#FFFFFF"
-                           Opacity="0.7"
-                           TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
-                           Padding="7, 5"
-                           Name="NewsDescription"
-                           Initialized="NewsDescription_OnInitialized"
-                           LineHeight="18"
-                           FontFamily="Calibri"
-                           Margin="0, -90" />
 
             </Grid>
-            
-                <Grid Grid.Row="0" Grid.Column="2"
-                      RowDefinitions="10, 50,
-                                      10, 50,
-                                      10, 50,
-                                      10, 50,
-                                      145, 50,
-                                      10, 50, 5"
-                      Background="#000000"
-                      Width="60"
-                      HorizontalAlignment="Right"
-                      Opacity="0.75">
-                    
+
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto">
+
+            <Grid Grid.Column="0" ColumnDefinitions="Auto, Auto">
+
+                <Grid Grid.Column="0"
+                      RowDefinitions="Auto, Auto">
+
+                    <Image Grid.Row="0" Source="avares://EELauncher/Assets/Logo.png"
+                           Width="275" Height="275" Margin="50" />
+
                     <Button Grid.Row="1"
-                            Name="SiteButton"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            Opacity="1"
-                            Click="SiteButton_OnClick">
-                        
-                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Site.png"/>
-                        
+                            Width="200" Height="75"
+                            HorizontalAlignment="Center"
+                            PointerEnter="PlayButtonEnter"
+                            PointerLeave="PlayButtonLeave"
+                            CornerRadius="15"
+                            Name="PlayButton"
+                            Click="PlayButton_OnClick">
+
+                        <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform" />
+
                     </Button>
-                    
-                    <Button Grid.Row="3"
-                            Name="DiscordButton"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            Opacity="1"
-                            Click="DiscordButton_OnClick">
-                        
-                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Discord.png"/>
-                        
-                    </Button>
-                    
-                    <Button Grid.Row="5"
-                            Name="YouTubeButton"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            Click="YouTubeButton_OnClick">
-                        
-                        <Image Width="53" Height="53" Source="avares://EELauncher/Assets/YouTube.png"/>
-                        
-                    </Button>
-                    
-                    <Button Grid.Row="7"
-                            Name="VkButton"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            Click="VkButton_OnClick">
-                        
-                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/VK.png"/>
-                        
-                    </Button>
-                    
-                    <Button Grid.Row="9"
-                            Name="SettingsButton"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            VerticalAlignment="Bottom">
-                        
-                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Settings.png"/>
-                        
-                    </Button> 
-                    
-                    <Button Grid.Row="11"
-                            Name="LogoutButton"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            Click="LogoutButton_OnClick">
-                        
-                        <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Logout.png"/>
-                        
-                    </Button>   
+
+                </Grid>
+
+                <Grid Grid.Column="1"
+                      RowDefinitions="400, Auto, Auto">
+
+                    <Carousel Grid.Row="0"
+                              Width="400" Height="350"
+                              Name="Carousel"
+                              Margin="0, 0, 0, 30">
+
+                        <Carousel.PageTransition>
+
+                            <PageSlide Duration="0.25" Orientation="Vertical" />
+
+                        </Carousel.PageTransition>
+
+                        <Image Source="avares://EELauncher/Assets/NewsExample.png"
+                               Name="NewsImage"
+                               PointerPressed="NewsImage_OnPointerPressed" />
+
+                    </Carousel>
+
+                    <TextBlock Grid.Row="1"
+                               Width="400" Height="75"
+                               VerticalAlignment="Top"
+                               Background="#000000" Foreground="#FFFFFF"
+                               Opacity="0.7"
+                               TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                               Padding="7, 5"
+                               Name="NewsDescription"
+                               Initialized="NewsDescription_OnInitialized"
+                               LineHeight="18"
+                               FontFamily="Calibri"
+                               Margin="0, -90" />
                     
                 </Grid>
+                
+            </Grid>
             
+            <ProgressBar Grid.Column="0"
+                         VerticalAlignment="Bottom"
+                         Height="20"
+                         CornerRadius="0"
+                         Name="DownloadProgress"/>
+            
+            <TextBlock Grid.Column="0"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       Padding="0, 0, 0, 1"
+                       FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"/>
+
+            <Grid Grid.Column="1"
+                  RowDefinitions="10, 50,
+                                  10, 50,
+                                  10, 50,
+                                  10, 50,
+                                  145, 50,
+                                  10, 50, 5"
+                  Background="#000000"
+                  Width="60"
+                  HorizontalAlignment="Right"
+                  Opacity="0.75">
+
+                <Button Grid.Row="1"
+                        Name="SiteButton"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Opacity="1"
+                        Click="SiteButton_OnClick">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Site.png" />
+
+                </Button>
+
+                <Button Grid.Row="3"
+                        Name="DiscordButton"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Opacity="1"
+                        Click="DiscordButton_OnClick">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Discord.png" />
+
+                </Button>
+
+                <Button Grid.Row="5"
+                        Name="YouTubeButton"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="YouTubeButton_OnClick">
+
+                    <Image Width="53" Height="53" Source="avares://EELauncher/Assets/YouTube.png" />
+
+                </Button>
+
+                <Button Grid.Row="7"
+                        Name="VkButton"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="VkButton_OnClick">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/VK.png" />
+
+                </Button>
+
+                <Button Grid.Row="9"
+                        Name="SettingsButton"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        VerticalAlignment="Bottom">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Settings.png" />
+
+                </Button>
+
+                <Button Grid.Row="11"
+                        Name="LogoutButton"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="LogoutButton_OnClick">
+
+                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Logout.png" />
+
+                </Button>
+
+            </Grid>
+
         </Grid>
-        
+
     </Grid>
-    
+
 </Window>
