@@ -9,6 +9,7 @@
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         Initialized="OnInitialized"
+        Closing="OnClosing"
         SystemDecorations="BorderOnly">
 
     <Grid RowDefinitions="40, 200, *">
@@ -109,7 +110,7 @@
                     Name="LoginButton"
                     Width="250"
                     HorizontalAlignment="Center"
-                    Content="Login"
+                    Content="Войти"
                     FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                     Foreground="#FFFFFF"
                     Click="LoginButton_OnClick"/>
@@ -129,7 +130,7 @@
 
                 <Button.Template>
                     <ControlTemplate>
-                        <TextBlock Text="Forgot password?"/>
+                        <TextBlock Text="Забыли пароль?"/>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
@@ -138,7 +139,7 @@
                     Name="NotRegistered"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    Margin="30, 7, -90, 0"
+                    Margin="23, 7, -90, 0"
                     FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                     Foreground="#FFFFFF"
                     HorizontalContentAlignment="Left"
@@ -149,7 +150,7 @@
 
                 <Button.Template>
                     <ControlTemplate>
-                        <TextBlock Text="Not registered?"/>
+                        <TextBlock Text="Нет аккаунта?"/>
                     </ControlTemplate>
                 </Button.Template>
 

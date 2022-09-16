@@ -248,7 +248,7 @@ namespace EELauncher.Views {
 
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
             
-            try { _minecraftProcess.Kill(); Program.ReleaseMemory(); } catch { /**/ }
+            try { _minecraftProcess.Kill(); Program.ReleaseMemory(); } finally { Environment.Exit(0); }
         }
     }
 }

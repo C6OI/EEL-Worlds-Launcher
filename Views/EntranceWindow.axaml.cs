@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
@@ -29,8 +30,8 @@ public partial class EntranceWindow : Window {
         WireControls();
         
         ClientSize = new Size(960, 540);
-        NicknameField.Text = "Nickname";
-        PasswordField.Text = "Password";
+        NicknameField.Text = "Никнейм";
+        PasswordField.Text = "Пароль";
     }
 
     void WireControls() {
@@ -105,19 +106,19 @@ public partial class EntranceWindow : Window {
     }
 
     void NicknameField_OnGotFocus(object? sender, GotFocusEventArgs e) {
-        ((TextBox)sender!).RemovePlaceholder("Nickname");
+        ((TextBox)sender!).RemovePlaceholder("Никнейм");
     }
 
     void NicknameField_OnLostFocus(object? sender, RoutedEventArgs e) {
-        ((TextBox)sender!).AddPlaceholder("Nickname");
+        ((TextBox)sender!).AddPlaceholder("Никнейм");
     }
 
     void PasswordField_OnGotFocus(object? sender, GotFocusEventArgs e) {
-        ((TextBox)sender!).RemovePlaceholder("Password");
+        ((TextBox)sender!).RemovePlaceholder("Пароль");
     }
 
     void PasswordField_OnLostFocus(object? sender, RoutedEventArgs e) {
-        ((TextBox)sender!).AddPlaceholder("Password");
+        ((TextBox)sender!).AddPlaceholder("Пароль");
     }
     
     void LoginButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -128,7 +129,7 @@ public partial class EntranceWindow : Window {
             WindowStartupLocation = WindowStartupLocation.CenterScreen
         };
         
-        if (NicknameField?.Text is null or "Nickname" || PasswordField?.Text is null or "Password") {
+        if (NicknameField?.Text is null or "Никнейм" || PasswordField?.Text is null or "Пароль") {
             mBoxParams.ContentTitle = "Ошибка";
             mBoxParams.ContentMessage = "Заполните все поля";
             
@@ -164,6 +165,10 @@ public partial class EntranceWindow : Window {
 
     void NotRegistered_OnClick(object? sender, RoutedEventArgs e) {
         "https://account.ely.by/register".OpenUrl();
+    }
+
+    void OnClosing(object? sender, CancelEventArgs e) {
+        try { Program.ReleaseMemory(); } finally { Environment.Exit(0); }
     }
 }
 
