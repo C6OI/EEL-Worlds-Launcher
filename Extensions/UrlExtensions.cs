@@ -24,9 +24,9 @@ public static class UrlExtensions {
         }
     }
     
-    public static HttpResponseMessage GetRequest(Uri uri) {
+    public static async Task<HttpResponseMessage> GetRequest(Uri uri) {
         using (HttpClient httpClient = new())
-            return httpClient.GetAsync(uri).Result;
+            return await httpClient.GetAsync(uri);
     }
 
     public static string PostRequest(string uri, IEnumerable<KeyValuePair<string, string>> data) {
@@ -38,12 +38,12 @@ public static class UrlExtensions {
         }
     }
 
-    public static void DownloadFile(Uri uri, string path) {
-        HttpResponseMessage response = GetRequest(uri);
+    public static async Task DownloadFile(Uri uri, string path) {
+        HttpResponseMessage response = await GetRequest(uri);
 
         try {
-            using (FileStream fileStream = new(path, FileMode.CreateNew))
-                response.Content.CopyToAsync(fileStream);
+            await using (FileStream fileStream = new(path, FileMode.CreateNew))
+                await response.Content.CopyToAsync(fileStream);
         } catch (IOException) {
 #if DEBUG
             Trace.WriteLine($"File {response.RequestMessage!.RequestUri} already exists");

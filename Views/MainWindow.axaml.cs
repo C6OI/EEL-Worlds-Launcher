@@ -180,7 +180,7 @@ namespace EELauncher.Views {
             mBox.Show();
         }
 
-        void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+        async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
             List<Control> disabled = new() { PlayButton, SettingsButton };
             disabled.ForEach(c => c.IsEnabled = false);
 
@@ -189,11 +189,11 @@ namespace EELauncher.Views {
                 DownloadProgress.Value = args.ProgressedFileCount;
             };
 
-            MVersionCollection versions = _fabricLoader.GetVersionMetadatas();
+            MVersionCollection versions = await _fabricLoader.GetVersionMetadatasAsync();
             MVersionMetadata version = versions.GetVersionMetadata(FabricVersion);
             
-            version.Save(_pathToMinecraft);
-            _launcher.GetAllVersions();
+            await version.SaveAsync(_pathToMinecraft);
+            await _launcher.GetAllVersionsAsync();
             
             CrawlPage("https://mods.eelworlds.ml");
 
@@ -211,7 +211,7 @@ namespace EELauncher.Views {
                 ClientToken = data.clientToken
             };
 
-            _minecraftProcess = _launcher.CreateProcess(FabricVersion, new MLaunchOption {
+            _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
                 Session = session
             });
@@ -254,7 +254,7 @@ namespace EELauncher.Views {
             try { _minecraftProcess.Kill(); Program.ReleaseMemory(); } finally { Environment.Exit(0); }
         }
         
-        public void CrawlPage(string uri) {
+        public async void CrawlPage(string uri) {
             CrawlConfiguration config = new() {
                 MaxPagesToCrawl = 10,
                 MinCrawlDelayPerDomainMilliSeconds = 500
@@ -263,7 +263,7 @@ namespace EELauncher.Views {
             PoliteWebCrawler crawler = new(config);
             crawler.PageCrawlCompleted += CrawlCompleted;
 
-            crawler.CrawlAsync(new Uri(uri));
+            await crawler.CrawlAsync(new Uri(uri));
         }
 
         public void CrawlCompleted(object? sender, PageCrawlCompletedArgs e) {
@@ -271,7 +271,7 @@ namespace EELauncher.Views {
 
             //Dispatcher.UIThread.InvokeAsync(() => DownloadProgress.Maximum = links.Count);
             
-            links?.ForEach(f => {
+            links?.ForEach(async f => {
                 Uri link = new(f.HrefValue.AbsoluteUri);
                 string fileName = Path.GetFileName(link.ToString());
                 
@@ -280,9 +280,9 @@ namespace EELauncher.Views {
                 //Dispatcher.UIThread.InvokeAsync(() => DownloadProgress.Value = i);
 
                 if (fileName.EndsWith(".jar"))
-                    UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Mods, fileName));
+                    await UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Mods, fileName));
                 else if (fileName.EndsWith(".png") || fileName.EndsWith(".json"))
-                    UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Emotes, fileName));
+                    await UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Emotes, fileName));
             });
         } 
     }
