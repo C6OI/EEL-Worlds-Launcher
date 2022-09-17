@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Web;
 using Abot2.Crawler;
 using Abot2.Poco;
 using EELauncher.Views;
@@ -42,7 +43,7 @@ public static class UrlExtensions {
         HttpResponseMessage response = await GetRequest(uri);
 
         try {
-            await using (FileStream fileStream = new(path, FileMode.CreateNew))
+            await using (FileStream fileStream = new(HttpUtility.UrlDecode(path), FileMode.CreateNew))
                 await response.Content.CopyToAsync(fileStream);
         } catch (IOException) {
 #if DEBUG
