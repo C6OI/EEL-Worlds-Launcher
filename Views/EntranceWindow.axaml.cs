@@ -146,6 +146,7 @@ public partial class EntranceWindow : Window {
 
         ElybyAuthData data = JsonConvert.DeserializeObject<ElybyAuthData>(UrlExtensions.PostRequest("https://authserver.ely.by/auth/authenticate", authData));
         StaticData.Data = data;
+        StaticData.Password = PasswordField.Text;
 
         if (data.accessToken == null || data.selectedProfile.name == null) {
             mBoxParams.ContentTitle = "Ошибка";
@@ -168,6 +169,7 @@ public partial class EntranceWindow : Window {
     }
 
     void OnClosing(object? sender, CancelEventArgs e) {
+        if (!StaticData.Data.Equals(new ElybyAuthData())) return;
         try { Program.ReleaseMemory(); } finally { Environment.Exit(0); }
     }
 }

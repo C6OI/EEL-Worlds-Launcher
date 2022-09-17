@@ -1,7 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Abot2.Crawler;
+using Abot2.Poco;
+using EELauncher.Views;
 
 namespace EELauncher.Extensions;
 
@@ -16,28 +24,30 @@ public static class UrlExtensions {
         }
     }
     
-    /// <summary>
-    /// Делает HTTP GET запрос
-    /// </summary>
-    /// <param name="uri">Адрес, по которому необходимо отправить GET запрос</param>
-    /// <returns>Асинхронный ответ на GET запрос</returns>
-    public static string GetRequest(string uri) {
+    public static HttpResponseMessage GetRequest(Uri uri) {
         using (HttpClient httpClient = new())
-            return httpClient.GetAsync(uri).Result.Content.ReadAsStringAsync().Result;
+            return httpClient.GetAsync(uri).Result;
     }
 
-    /// <summary>
-    /// Делает HTTP POST запрос
-    /// </summary>
-    /// <param name="uri">Адрес, по которому необходимо отправить запрос</param>
-    /// <param name="data">Данные для отправки</param>
-    /// <returns>Ответ на запрос</returns>
     public static string PostRequest(string uri, IEnumerable<KeyValuePair<string, string>> data) {
         using (HttpClient httpClient = new()) {
-            HttpContent xd = new FormUrlEncodedContent(data);
-            HttpResponseMessage responseMessage = httpClient.PostAsync(uri, xd).Result;
-            
+            HttpContent content = new FormUrlEncodedContent(data);
+            HttpResponseMessage responseMessage = httpClient.PostAsync(uri, content).Result;
+
             return responseMessage.Content.ReadAsStringAsync().Result;
+        }
+    }
+
+    public static void DownloadFile(Uri uri, string path) {
+        HttpResponseMessage response = GetRequest(uri);
+
+        try {
+            using (FileStream fileStream = new(path, FileMode.CreateNew))
+                response.Content.CopyToAsync(fileStream);
+        } catch (IOException) {
+#if DEBUG
+            Trace.WriteLine($"File {response.RequestMessage!.RequestUri} already exists");
+#endif
         }
     }
 }

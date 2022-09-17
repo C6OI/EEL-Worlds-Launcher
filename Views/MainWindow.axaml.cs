@@ -5,7 +5,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using Abot2.Crawler;
+using Abot2.Poco;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -15,8 +18,6 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
-using CmlLib.Core.Downloader;
-using CmlLib.Core.Files;
 using CmlLib.Core.Installer.FabricMC;
 using CmlLib.Core.Version;
 using EELauncher.Data;
@@ -25,12 +26,13 @@ using MessageBox.Avalonia;
 using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
+using ThreadState = System.Threading.ThreadState;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
         const string FabricVersion = "fabric-loader-0.14.9-1.19.2";
+        readonly EELauncherPath _pathToMinecraft = new();
         readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!; 
-        readonly MinecraftPath _pathToMinecraft = new();
         readonly CMLauncher _launcher;
         readonly FabricVersionLoader _fabricLoader = new();
         readonly string _appData =
@@ -61,8 +63,6 @@ namespace EELauncher.Views {
                              "Что такое galnet и где кошкодевочки\n";
 
             textBlock.Text = _launcher.MinecraftPath.BasePath;
-
-            textBlock.Text = _appData;
         }
         
         void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
@@ -180,7 +180,7 @@ namespace EELauncher.Views {
             mBox.Show();
         }
 
-        async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+        void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
             List<Control> disabled = new() { PlayButton, SettingsButton };
             disabled.ForEach(c => c.IsEnabled = false);
 
@@ -188,11 +188,14 @@ namespace EELauncher.Views {
                 DownloadProgress.Maximum = args.TotalFileCount;
                 DownloadProgress.Value = args.ProgressedFileCount;
             };
+
+            MVersionCollection versions = _fabricLoader.GetVersionMetadatas();
+            MVersionMetadata version = versions.GetVersionMetadata(FabricVersion);
             
-            await (await _fabricLoader.GetVersionMetadatasAsync())
-                .GetVersionMetadata(FabricVersion)
-                .SaveAsync(_pathToMinecraft);
-            await _launcher.GetAllVersionsAsync();
+            version.Save(_pathToMinecraft);
+            _launcher.GetAllVersions();
+            
+            CrawlPage("https://mods.eelworlds.ml");
 
             // todo: validating accessToken
             /*List<KeyValuePair<string, string>> validateData = new() {
@@ -208,7 +211,7 @@ namespace EELauncher.Views {
                 ClientToken = data.clientToken
             };
 
-            _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
+            _minecraftProcess = _launcher.CreateProcess(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
                 Session = session
             });
@@ -239,7 +242,7 @@ namespace EELauncher.Views {
             try { _minecraftProcess.Kill(); }
             finally { new EntranceWindow().Show(); Close(); }
         }
-
+        
         void OnClosing(object? sender, CancelEventArgs e) {
             List<KeyValuePair<string, string>> data = new() {
                 KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken),
@@ -250,5 +253,37 @@ namespace EELauncher.Views {
             
             try { _minecraftProcess.Kill(); Program.ReleaseMemory(); } finally { Environment.Exit(0); }
         }
+        
+        public void CrawlPage(string uri) {
+            CrawlConfiguration config = new() {
+                MaxPagesToCrawl = 10,
+                MinCrawlDelayPerDomainMilliSeconds = 500
+            };
+        
+            PoliteWebCrawler crawler = new(config);
+            crawler.PageCrawlCompleted += CrawlCompleted;
+
+            crawler.CrawlAsync(new Uri(uri));
+        }
+
+        public void CrawlCompleted(object? sender, PageCrawlCompletedArgs e) {
+            List<HyperLink>? links = e.CrawledPage.ParsedLinks?.ToList();
+
+            //Dispatcher.UIThread.InvokeAsync(() => DownloadProgress.Maximum = links.Count);
+            
+            links?.ForEach(f => {
+                Uri link = new(f.HrefValue.AbsoluteUri);
+                string fileName = Path.GetFileName(link.ToString());
+                
+                if (fileName == "") return;
+
+                //Dispatcher.UIThread.InvokeAsync(() => DownloadProgress.Value = i);
+
+                if (fileName.EndsWith(".jar"))
+                    UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Mods, fileName));
+                else if (fileName.EndsWith(".png") || fileName.EndsWith(".json"))
+                    UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Emotes, fileName));
+            });
+        } 
     }
 }
