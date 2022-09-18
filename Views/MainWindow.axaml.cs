@@ -36,6 +36,7 @@ namespace EELauncher.Views {
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData,
                     Environment.SpecialFolderOption.Create), "EELauncher");
         Process _minecraftProcess = null!;
+        string? _injector;
         
         public MainWindow() {
             AppDomain.CurrentDomain.DomainUnload += Unloading;
@@ -224,13 +225,16 @@ namespace EELauncher.Views {
                 ClientToken = data.clientToken
             };
 
+            string[] jvmArguments = { $"-javaagent:{_injector}=ely.by" };
+
             _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
                 Session = session,
                 GameLauncherName = "EELauncher",
                 GameLauncherVersion = "1.0",
                 ServerIp = "minecraft.eelworlds.ml",
-                ServerPort = 8080
+                ServerPort = 8080,
+                JVMArguments = jvmArguments
             });
             
             Hide();
@@ -241,6 +245,7 @@ namespace EELauncher.Views {
             _minecraftProcess.Exited += (s, a) => {
                 Dispatcher.UIThread.InvokeAsync(() => {
                     DownloadProgress.Value = 0;
+                    DownloadInfo.Text = "";
                     disabled.ForEach(c => c.IsEnabled = true);
                     Show();
                 });
@@ -282,8 +287,14 @@ namespace EELauncher.Views {
 
                 if (fileName.EndsWith(".jar")) {
                     string file = Path.Combine(_pathToMinecraft.Mods, fileName);
+
+                    if (fileName.StartsWith("authlib-injector")) {
+                        file = Path.Combine(_pathToMinecraft.BasePath, fileName);
+                        _injector = file;
+                    }
+
                     if (File.Exists(file)) return;
-                    
+
                     await UrlExtensions.DownloadFile(link, file);
                 } else if (fileName.EndsWith(".png") || fileName.EndsWith(".json")) {
                     string file = Path.Combine(_pathToMinecraft.Emotes, fileName);
