@@ -36,7 +36,6 @@ namespace EELauncher.Views {
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData,
                     Environment.SpecialFolderOption.Create), "EELauncher");
         Process _minecraftProcess = null!;
-        string? _injector;
         
         public MainWindow() {
             AppDomain.CurrentDomain.DomainUnload += Unloading;
@@ -225,7 +224,11 @@ namespace EELauncher.Views {
                 ClientToken = data.clientToken
             };
 
-            string[] jvmArguments = { $"-javaagent:{_injector}=ely.by" };
+            string injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
+            
+            string[] jvmArguments = {
+                $"-javaagent:{injector}=ely.by"
+            };
 
             _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
@@ -288,11 +291,9 @@ namespace EELauncher.Views {
                 if (fileName.EndsWith(".jar")) {
                     string file = Path.Combine(_pathToMinecraft.Mods, fileName);
 
-                    if (fileName.StartsWith("authlib-injector")) {
+                    if (fileName.StartsWith("authlib-injector"))
                         file = Path.Combine(_pathToMinecraft.BasePath, fileName);
-                        _injector = file;
-                    }
-
+                    
                     if (File.Exists(file)) return;
 
                     await UrlExtensions.DownloadFile(link, file);
