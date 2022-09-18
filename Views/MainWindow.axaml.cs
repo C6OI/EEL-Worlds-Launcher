@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Avalonia;
@@ -26,7 +23,6 @@ using MessageBox.Avalonia;
 using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
-using ThreadState = System.Threading.ThreadState;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
@@ -42,6 +38,7 @@ namespace EELauncher.Views {
         Process _minecraftProcess = null!;
         
         public MainWindow() {
+            AppDomain.CurrentDomain.DomainUnload += Unloading;
             _launcher = new CMLauncher(_pathToMinecraft);
 
             InitializeComponent();
@@ -53,6 +50,20 @@ namespace EELauncher.Views {
 
         void OnInitialized(object? sender, EventArgs e) {
             Background = WindowExtensions.RandomBackground();
+        }
+
+        void Unloading(object? sender, EventArgs e) {
+            List<KeyValuePair<string, string>> data = new() {
+                KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken),
+                KeyValuePair.Create<string, string>("clientToken", StaticData.Data.clientToken)
+            };
+
+            UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
+
+            try {
+                _minecraftProcess.Close();
+                Program.ReleaseMemory();
+            } catch { /**/ }
         }
         
         void NewsDescription_OnInitialized(object? sender, EventArgs e) {
@@ -90,7 +101,7 @@ namespace EELauncher.Views {
         }
 
         void CloseButton_OnClick(object? sender, RoutedEventArgs e) {
-            try { _minecraftProcess.Kill(); } finally { Close(); }
+            Close();
         }
 
         void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -184,9 +195,11 @@ namespace EELauncher.Views {
             List<Control> disabled = new() { PlayButton, SettingsButton };
             disabled.ForEach(c => c.IsEnabled = false);
 
-            _launcher.FileChanged += args => {
-                DownloadProgress.Maximum = args.TotalFileCount;
-                DownloadProgress.Value = args.ProgressedFileCount;
+            _launcher.FileChanged += a => {
+                DownloadProgress.Maximum = a.TotalFileCount;
+                DownloadProgress.Value = a.ProgressedFileCount;
+
+                DownloadInfo.Text = a.FileName != "" ? $"Скачивается: {a.FileName}" : $"{a.ProgressedFileCount}/{a.TotalFileCount}";
             };
 
             MVersionCollection versions = await _fabricLoader.GetVersionMetadatasAsync();
@@ -213,18 +226,21 @@ namespace EELauncher.Views {
 
             _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
-                Session = session
+                Session = session,
+                GameLauncherName = "EELauncher",
+                GameLauncherVersion = "1.0",
+                ServerIp = "minecraft.eelworlds.ml",
+                ServerPort = 8080
             });
             
             Hide();
 
             _minecraftProcess.EnableRaisingEvents = true;
             _minecraftProcess.Start();
-            
-            DownloadProgress.Value = 0;
 
             _minecraftProcess.Exited += (s, a) => {
                 Dispatcher.UIThread.InvokeAsync(() => {
+                    DownloadProgress.Value = 0;
                     disabled.ForEach(c => c.IsEnabled = true);
                     Show();
                 });
@@ -239,22 +255,11 @@ namespace EELauncher.Views {
 
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/signout", data);
             
-            try { _minecraftProcess.Kill(); }
-            finally { new EntranceWindow().Show(); Close(); }
+            new EntranceWindow().Show();
+            Close();
         }
-        
-        void OnClosing(object? sender, CancelEventArgs e) {
-            List<KeyValuePair<string, string>> data = new() {
-                KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken),
-                KeyValuePair.Create<string, string>("clientToken", StaticData.Data.clientToken)
-            };
 
-            UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
-            
-            try { _minecraftProcess.Kill(); Program.ReleaseMemory(); } finally { Environment.Exit(0); }
-        }
-        
-        public async void CrawlPage(string uri) {
+        async void CrawlPage(string uri) {
             CrawlConfiguration config = new() {
                 MaxPagesToCrawl = 10,
                 MinCrawlDelayPerDomainMilliSeconds = 500
@@ -266,24 +271,27 @@ namespace EELauncher.Views {
             await crawler.CrawlAsync(new Uri(uri));
         }
 
-        public void CrawlCompleted(object? sender, PageCrawlCompletedArgs e) {
+        void CrawlCompleted(object? sender, PageCrawlCompletedArgs e) {
             List<HyperLink>? links = e.CrawledPage.ParsedLinks?.ToList();
-
-            //Dispatcher.UIThread.InvokeAsync(() => DownloadProgress.Maximum = links.Count);
             
             links?.ForEach(async f => {
                 Uri link = new(f.HrefValue.AbsoluteUri);
                 string fileName = Path.GetFileName(link.ToString());
-                
+
                 if (fileName == "") return;
 
-                //Dispatcher.UIThread.InvokeAsync(() => DownloadProgress.Value = i);
-
-                if (fileName.EndsWith(".jar"))
-                    await UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Mods, fileName));
-                else if (fileName.EndsWith(".png") || fileName.EndsWith(".json"))
-                    await UrlExtensions.DownloadFile(link, Path.Combine(_pathToMinecraft.Emotes, fileName));
+                if (fileName.EndsWith(".jar")) {
+                    string file = Path.Combine(_pathToMinecraft.Mods, fileName);
+                    if (File.Exists(file)) return;
+                    
+                    await UrlExtensions.DownloadFile(link, file);
+                } else if (fileName.EndsWith(".png") || fileName.EndsWith(".json")) {
+                    string file = Path.Combine(_pathToMinecraft.Emotes, fileName);
+                    if (File.Exists(file)) return;
+                    
+                    await UrlExtensions.DownloadFile(link, file);
+                }
             });
-        } 
+        }
     }
 }

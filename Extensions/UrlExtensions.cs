@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web;
-using Abot2.Crawler;
-using Abot2.Poco;
-using EELauncher.Views;
 
 namespace EELauncher.Extensions;
 
@@ -42,13 +37,13 @@ public static class UrlExtensions {
     public static async Task DownloadFile(Uri uri, string path) {
         HttpResponseMessage response = await GetRequest(uri);
 
+        if (File.Exists(path)) return;
+
         try {
             await using (FileStream fileStream = new(HttpUtility.UrlDecode(path), FileMode.CreateNew))
                 await response.Content.CopyToAsync(fileStream);
-        } catch (IOException) {
-#if DEBUG
-            Trace.WriteLine($"File {response.RequestMessage!.RequestUri} already exists");
-#endif
+        } catch (Exception) {
+            Trace.WriteLine($"File already exists: {path}");
         }
     }
 }

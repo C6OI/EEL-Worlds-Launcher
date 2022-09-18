@@ -106,19 +106,19 @@ public partial class EntranceWindow : Window {
     }
 
     void NicknameField_OnGotFocus(object? sender, GotFocusEventArgs e) {
-        ((TextBox)sender!).RemovePlaceholder("Никнейм");
+        ((TextBox)sender!).RemovePlaceholder("Никнейм", false);
     }
 
     void NicknameField_OnLostFocus(object? sender, RoutedEventArgs e) {
-        ((TextBox)sender!).AddPlaceholder("Никнейм");
+        ((TextBox)sender!).AddPlaceholder("Никнейм", false);
     }
 
     void PasswordField_OnGotFocus(object? sender, GotFocusEventArgs e) {
-        ((TextBox)sender!).RemovePlaceholder("Пароль");
+        ((TextBox)sender!).RemovePlaceholder("Пароль", true);
     }
 
     void PasswordField_OnLostFocus(object? sender, RoutedEventArgs e) {
-        ((TextBox)sender!).AddPlaceholder("Пароль");
+        ((TextBox)sender!).AddPlaceholder("Пароль", true);
     }
     
     void LoginButton_OnClick(object? sender, RoutedEventArgs e) {

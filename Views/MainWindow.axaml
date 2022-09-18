@@ -10,7 +10,6 @@
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         Initialized="OnInitialized"
-        Closing="OnClosing"
         SystemDecorations="BorderOnly">
 
     <Design.DataContext>
@@ -148,7 +147,8 @@
                        VerticalAlignment="Bottom"
                        HorizontalAlignment="Center"
                        Padding="0, 0, 0, 1"
-                       FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"/>
+                       FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                       Name="DownloadInfo"/>
 
             <Grid Grid.Column="1"
                   RowDefinitions="10, 50,
