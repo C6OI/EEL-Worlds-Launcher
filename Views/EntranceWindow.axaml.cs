@@ -30,6 +30,7 @@ public partial class EntranceWindow : Window {
         WireControls();
         
         ClientSize = new Size(960, 540);
+        LauncherName.Text = Tag!.ToString();
         NicknameField.Text = "Никнейм";
         PasswordField.Text = "Пароль";
     }

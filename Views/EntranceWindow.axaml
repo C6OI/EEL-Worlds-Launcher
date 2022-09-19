@@ -4,13 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
         x:Class="EELauncher.Views.EntranceWindow"
-        Icon="/Assets/Cube.png"
+        Icon="/Assets/Cube.ico"
         Title="EEL Worlds 3"
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         Initialized="OnInitialized"
         Closing="OnClosing"
-        SystemDecorations="BorderOnly">
+        SystemDecorations="BorderOnly"
+        Tag="EELauncher 1.1">
 
     <Grid RowDefinitions="40, 200, *">
 
@@ -25,11 +26,7 @@
                        Padding="10, 12"
                        FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
                        FontSize="14"
-                       Focusable="False">
-
-                EELauncher 1.0
-
-            </TextBlock>
+                       Focusable="False"/>
 
             <Grid Grid.Column="1"
                   ColumnDefinitions="42, 42"

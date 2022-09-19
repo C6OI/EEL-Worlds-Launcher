@@ -45,7 +45,7 @@ namespace EELauncher.Views {
             ClientSize = new Size(960, 540);
             ServicePointManager.DefaultConnectionLimit = 256;
 
-            LauncherName.Text = $"EELauncher 1.0: Вы вошли как {StaticData.Data.selectedProfile.name}";
+            LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.selectedProfile.name}";
         }
 
         void OnInitialized(object? sender, EventArgs e) {
@@ -164,7 +164,7 @@ namespace EELauncher.Views {
         void YouTubeButton_OnClick(object? sender, RoutedEventArgs e) {
             MessageBoxStandardParams mBoxParams = new() {
                 ContentTitle = "404 Not Found",
-                ContentMessage = "We aren't have an YouTube channel yet",
+                ContentMessage = "We don't have an YouTube channel yet",
                 WindowIcon = Icon,
                 Icon = MessageBox.Avalonia.Enums.Icon.Error,
                 ShowInCenter = true,
@@ -179,7 +179,7 @@ namespace EELauncher.Views {
         void VkButton_OnClick(object? sender, RoutedEventArgs e) {
             MessageBoxStandardParams mBoxParams = new() {
                 ContentTitle = "404 Not Found",
-                ContentMessage = "We aren't have an VK group yet",
+                ContentMessage = "We don't have an VK group yet",
                 WindowIcon = Icon,
                 Icon = MessageBox.Avalonia.Enums.Icon.Error,
                 ShowInCenter = true,
@@ -237,7 +237,8 @@ namespace EELauncher.Views {
                 GameLauncherVersion = "1.0",
                 ServerIp = "minecraft.eelworlds.ml",
                 ServerPort = 8080,
-                JVMArguments = jvmArguments
+                JVMArguments = jvmArguments, 
+                FullScreen = true
             });
             
             Hide();
@@ -301,6 +302,11 @@ namespace EELauncher.Views {
                     string file = Path.Combine(_pathToMinecraft.Emotes, fileName);
                     if (File.Exists(file)) return;
                     
+                    await UrlExtensions.DownloadFile(link, file);
+                } else if (fileName == "servers.dat") {
+                    string file = Path.Combine(_pathToMinecraft.BasePath, fileName);
+                    if (File.Exists(file)) return;
+
                     await UrlExtensions.DownloadFile(link, file);
                 }
             });
