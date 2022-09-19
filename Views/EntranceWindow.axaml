@@ -43,7 +43,7 @@
                         PointerEnter="MinimizeButton_OnPointerEnter"
                         PointerLeave="MinimizeButton_OnPointerLeave">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png"/>
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Minimize_Normal.svg}"/>
 
                 </Button>
 
@@ -58,7 +58,7 @@
                         PointerEnter="CloseButton_OnPointerEnter"
                         PointerLeave="CloseButton_OnPointerLeave">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png"/>
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}"/>
 
                 </Button>
 

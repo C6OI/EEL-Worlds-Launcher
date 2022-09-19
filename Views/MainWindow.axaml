@@ -49,7 +49,7 @@
                         PointerEnter="MinimizeButton_OnPointerEnter"
                         PointerLeave="MinimizeButton_OnPointerLeave">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Minimize_Normal.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Minimize_Normal.svg}"/>
 
                 </Button>
 
@@ -64,7 +64,7 @@
                         PointerEnter="CloseButton_OnPointerEnter"
                         PointerLeave="CloseButton_OnPointerLeave">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Close_Normal.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}"/>
 
                 </Button>
 
@@ -91,7 +91,7 @@
                             Name="PlayButton"
                             Click="PlayButton_OnClick">
 
-                        <Image Source="avares://EELauncher/Assets/Play_Button_Normal.png" Stretch="Uniform" />
+                        <Image Source="{SvgImage /Assets/Play_Button_Normal.svg}" Stretch="Uniform" />
 
                     </Button>
 
@@ -167,7 +167,7 @@
                         Opacity="1"
                         Click="SiteButton_OnClick">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Site.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Site.svg}"/>
 
                 </Button>
 
@@ -179,7 +179,7 @@
                         Opacity="1"
                         Click="DiscordButton_OnClick">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Discord.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Discord.svg}" />
 
                 </Button>
 
@@ -190,7 +190,7 @@
                         BorderBrush="Transparent"
                         Click="YouTubeButton_OnClick">
 
-                    <Image Width="53" Height="53" Source="avares://EELauncher/Assets/YouTube.png" />
+                    <Image Width="53" Height="53" Source="{SvgImage /Assets/YouTube.svg}" />
 
                 </Button>
 
@@ -201,7 +201,7 @@
                         BorderBrush="Transparent"
                         Click="VkButton_OnClick">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/VK.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/VK.svg}" />
 
                 </Button>
 
@@ -212,7 +212,7 @@
                         BorderBrush="Transparent"
                         VerticalAlignment="Bottom">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Settings.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Settings.svg}" />
 
                 </Button>
 
@@ -223,7 +223,7 @@
                         BorderBrush="Transparent"
                         Click="LogoutButton_OnClick">
 
-                    <Image Width="50" Height="50" Source="avares://EELauncher/Assets/Logout.png" />
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Logout.svg}" />
 
                 </Button>
 

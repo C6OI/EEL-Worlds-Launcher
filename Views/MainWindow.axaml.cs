@@ -12,6 +12,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
@@ -84,7 +85,9 @@ namespace EELauncher.Views {
             Button button = (Button)sender!;
             
             Image enterButtonImage = new() {
-                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Play_Button_Pressed.png")))
+                Source = new SvgImage {
+                    Source = SvgSource.Load<SvgSource>("", new Uri(@"avares://EELauncher/Assets/Play_Button_Pressed.svg"))
+                }
             };
 
             button.Content = enterButtonImage;
@@ -92,9 +95,11 @@ namespace EELauncher.Views {
 
         void PlayButtonLeave(object? sender, PointerEventArgs e) {
             Button button = (Button)sender!;
-
+            
             Image leaveButtonImage = new() {
-                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Play_Button_Normal.png")))
+                Source = new SvgImage {
+                    Source = SvgSource.Load<SvgSource>("", new Uri(@"avares://EELauncher/Assets/Play_Button_Normal.svg"))
+                }
             };
 
             button.Content = leaveButtonImage;
@@ -113,31 +118,36 @@ namespace EELauncher.Views {
                 BeginMoveDrag(e);
         }
 
+        void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) {
+            Button button = (Button)sender!;
+
+            Image leaveButtonImage = new() {
+                Source = new SvgImage {
+                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Normal.svg"))
+                }
+            };
+
+            button.Content = leaveButtonImage;
+        }
+
         void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) {
             Button button = (Button)sender!;
 
             Image enterButtonImage = new() {
-                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Minimize_Pressed.png")))
+                Source = new SvgImage {
+                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Pressed.svg"))
+                }
             };
 
             button.Content = enterButtonImage;
         }
-
-        void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-
-            Image enterButtonImage = new() {
-                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Minimize_Normal.png")))
-            };
-
-            button.Content = enterButtonImage;
-        }
-
         void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) {
             Button button = (Button)sender!;
 
             Image enterButtonImage = new() {
-                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Close_Pressed.png")))
+                Source = new SvgImage {
+                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Pressed.svg"))
+                }
             };
 
             button.Content = enterButtonImage;
@@ -146,11 +156,13 @@ namespace EELauncher.Views {
         void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) {
             Button button = (Button)sender!;
 
-            Image enterButtonImage = new() {
-                Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Close_Normal.png")))
+            Image leaveButtonImage = new() {
+                Source = new SvgImage {
+                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Normal.svg"))
+                }
             };
 
-            button.Content = enterButtonImage;
+            button.Content = leaveButtonImage;
         }
 
         void SiteButton_OnClick(object? sender, RoutedEventArgs e) {

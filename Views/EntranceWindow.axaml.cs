@@ -9,15 +9,19 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Svg.Skia;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using Newtonsoft.Json;
+using Svg.Skia;
 
 namespace EELauncher.Views; 
 
 public partial class EntranceWindow : Window {
+    SKSvg _svg = new();
+    
     public EntranceWindow() {
         InitializeComponent();
 #if DEBUG
@@ -65,18 +69,22 @@ public partial class EntranceWindow : Window {
     void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) {
         Button button = (Button)sender!;
 
-        Image enterButtonImage = new() {
-            Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Minimize_Normal.png")))
+        Image leaveButtonImage = new() {
+            Source = new SvgImage {
+                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Normal.svg"))
+            }
         };
 
-        button.Content = enterButtonImage;
+        button.Content = leaveButtonImage;
     }
 
     void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) {
         Button button = (Button)sender!;
 
         Image enterButtonImage = new() {
-            Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Minimize_Pressed.png")))
+            Source = new SvgImage {
+                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Pressed.svg"))
+            }
         };
 
         button.Content = enterButtonImage;
@@ -90,7 +98,9 @@ public partial class EntranceWindow : Window {
         Button button = (Button)sender!;
 
         Image enterButtonImage = new() {
-            Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Close_Pressed.png")))
+            Source = new SvgImage {
+                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Pressed.svg"))
+            }
         };
 
         button.Content = enterButtonImage;
@@ -99,11 +109,13 @@ public partial class EntranceWindow : Window {
     void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) {
         Button button = (Button)sender!;
 
-        Image enterButtonImage = new() {
-            Source = new Bitmap(_assets.Open(new Uri(@"avares://EELauncher/Assets/Close_Normal.png")))
+        Image leaveButtonImage = new() {
+            Source = new SvgImage {
+                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Normal.svg"))
+            }
         };
 
-        button.Content = enterButtonImage;
+        button.Content = leaveButtonImage;
     }
 
     void NicknameField_OnGotFocus(object? sender, GotFocusEventArgs e) {
