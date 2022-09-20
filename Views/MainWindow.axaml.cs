@@ -29,14 +29,10 @@ namespace EELauncher.Views {
     public partial class MainWindow : Window {
         const string FabricVersion = "fabric-loader-0.14.9-1.19.2";
         readonly EELauncherPath _pathToMinecraft = new();
-        readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!; 
         readonly CMLauncher _launcher;
         readonly FabricVersionLoader _fabricLoader = new();
-        readonly string _appData =
-            Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData,
-                    Environment.SpecialFolderOption.Create), "EELauncher");
         Process _minecraftProcess = null!;
+        MessageBoxStandardParams _notFound;
         
         public MainWindow() {
             AppDomain.CurrentDomain.DomainUnload += Unloading;
@@ -45,13 +41,19 @@ namespace EELauncher.Views {
             InitializeComponent();
             ClientSize = new Size(960, 540);
             ServicePointManager.DefaultConnectionLimit = 256;
+            
+            _notFound = new MessageBoxStandardParams {
+                ContentTitle = "404 Not Found",
+                WindowIcon = Icon,
+                Icon = MessageBox.Avalonia.Enums.Icon.Error,
+                ShowInCenter = true,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
 
             LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.selectedProfile.name}";
         }
 
-        void OnInitialized(object? sender, EventArgs e) {
-            Background = WindowExtensions.RandomBackground();
-        }
+        void OnInitialized(object? sender, EventArgs e) => Background = WindowExtensions.RandomBackground();
 
         void Unloading(object? sender, EventArgs e) {
             List<KeyValuePair<string, string>> data = new() {
@@ -67,140 +69,50 @@ namespace EELauncher.Views {
             } catch { /**/ }
         }
         
-        void NewsDescription_OnInitialized(object? sender, EventArgs e) {
-            TextBlock textBlock = (TextBlock)sender!;
-            
-            textBlock.Text = "Раздача на спувне бесплатные шалкеры awawa!!\n" +
-                             "Вчера я съел угря\n" +
-                             "Что такое galnet и где кошкодевочки\n";
+        void NewsDescription_OnInitialized(object? sender, EventArgs e) =>
+            ((TextBlock)sender!).Text = "Скоро здесь будут новости с нашего сайта...";
 
-            textBlock.Text = _launcher.MinecraftPath.BasePath;
-        }
-        
-        void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
+        void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) => 
             "https://eelworlds.ml/news/coming-soon".OpenUrl();
-        }
+
+        void PlayButtonEnter(object? sender, PointerEventArgs e) =>
+            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Play_Button_Pressed.svg");
         
-        void PlayButtonEnter(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-            
-            Image enterButtonImage = new() {
-                Source = new SvgImage {
-                    Source = SvgSource.Load<SvgSource>("", new Uri(@"avares://EELauncher/Assets/Play_Button_Pressed.svg"))
-                }
-            };
+        void PlayButtonLeave(object? sender, PointerEventArgs e) =>
+            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Play_Button_Normal.svg");
 
-            button.Content = enterButtonImage;
-        }
+        void CloseButton_OnClick(object? sender, RoutedEventArgs e) => Close();
 
-        void PlayButtonLeave(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-            
-            Image leaveButtonImage = new() {
-                Source = new SvgImage {
-                    Source = SvgSource.Load<SvgSource>("", new Uri(@"avares://EELauncher/Assets/Play_Button_Normal.svg"))
-                }
-            };
-
-            button.Content = leaveButtonImage;
-        }
-
-        void CloseButton_OnClick(object? sender, RoutedEventArgs e) {
-            Close();
-        }
-
-        void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
-            WindowState = WindowState.Minimized;
-        }
+        void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
         void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-            if (e.Pointer.IsPrimary)
-                BeginMoveDrag(e);
+            if (e.Pointer.IsPrimary) BeginMoveDrag(e);
         }
 
-        void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-
-            Image leaveButtonImage = new() {
-                Source = new SvgImage {
-                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Normal.svg"))
-                }
-            };
-
-            button.Content = leaveButtonImage;
-        }
-
-        void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-
-            Image enterButtonImage = new() {
-                Source = new SvgImage {
-                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Pressed.svg"))
-                }
-            };
-
-            button.Content = enterButtonImage;
-        }
-        void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-
-            Image enterButtonImage = new() {
-                Source = new SvgImage {
-                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Pressed.svg"))
-                }
-            };
-
-            button.Content = enterButtonImage;
-        }
-
-        void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) {
-            Button button = (Button)sender!;
-
-            Image leaveButtonImage = new() {
-                Source = new SvgImage {
-                    Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Normal.svg"))
-                }
-            };
-
-            button.Content = leaveButtonImage;
-        }
-
-        void SiteButton_OnClick(object? sender, RoutedEventArgs e) {
-            "https://eelworlds.ml/".OpenUrl();
-        }
+        void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
+            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Normal.svg");
         
-        void DiscordButton_OnClick(object? sender, RoutedEventArgs e) {
-            "https://discord.gg/Nt9chgHxQ6".OpenUrl();
-        }
+        void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
+            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Pressed.svg");
+        
+        void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
+            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Pressed.svg");
 
+        void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
+            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Normal.svg");
+
+        void SiteButton_OnClick(object? sender, RoutedEventArgs e) => "https://eelworlds.ml/".OpenUrl();
+
+        void DiscordButton_OnClick(object? sender, RoutedEventArgs e) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();
+        
         void YouTubeButton_OnClick(object? sender, RoutedEventArgs e) {
-            MessageBoxStandardParams mBoxParams = new() {
-                ContentTitle = "404 Not Found",
-                ContentMessage = "We don't have an YouTube channel yet",
-                WindowIcon = Icon,
-                Icon = MessageBox.Avalonia.Enums.Icon.Error,
-                ShowInCenter = true,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-            
-            IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
-
-            mBox.Show();
+            _notFound.ContentMessage = "We don't have an YouTube channel yet";
+            MessageBoxManager.GetMessageBoxStandardWindow(_notFound).Show();
         }
 
         void VkButton_OnClick(object? sender, RoutedEventArgs e) {
-            MessageBoxStandardParams mBoxParams = new() {
-                ContentTitle = "404 Not Found",
-                ContentMessage = "We don't have an VK group yet",
-                WindowIcon = Icon,
-                Icon = MessageBox.Avalonia.Enums.Icon.Error,
-                ShowInCenter = true,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-            
-            IMsBoxWindow<ButtonResult>? mBox = MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams);
-
-            mBox.Show();
+            _notFound.ContentMessage = "We don't have an VK group yet";
+            MessageBoxManager.GetMessageBoxStandardWindow(_notFound).Show();
         }
 
         async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -232,9 +144,7 @@ namespace EELauncher.Views {
             ElybyAuthData data = StaticData.Data;
             SelectedProfile profile = data.selectedProfile;
 
-            MSession session = new(profile.name, data.accessToken, profile.id) {
-                ClientToken = data.clientToken
-            };
+            MSession session = new(profile.name, data.accessToken, profile.id) { ClientToken = data.clientToken };
 
             string injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
             
@@ -246,7 +156,7 @@ namespace EELauncher.Views {
                 MaximumRamMb = 2048,
                 Session = session,
                 GameLauncherName = "EELauncher",
-                GameLauncherVersion = "1.0",
+                GameLauncherVersion = "1.1",
                 ServerIp = "minecraft.eelworlds.ml",
                 ServerPort = 8080,
                 JVMArguments = jvmArguments, 

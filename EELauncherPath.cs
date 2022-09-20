@@ -34,8 +34,8 @@ public class EELauncherPath : MinecraftPath {
         Dir(Runtime);
         Dir(Assets);
     }
-    
-    protected new static string Dir(string path)
+
+    new static string Dir(string path)
     {
         string p = NormalizePath(path);
         if (!Directory.Exists(p))

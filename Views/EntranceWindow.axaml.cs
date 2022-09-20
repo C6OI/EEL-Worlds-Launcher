@@ -20,7 +20,8 @@ using Svg.Skia;
 namespace EELauncher.Views; 
 
 public partial class EntranceWindow : Window {
-    SKSvg _svg = new();
+    const string Nickname = "Никнейм";
+    const string Password = "Пароль";
     
     public EntranceWindow() {
         InitializeComponent();
@@ -50,100 +51,52 @@ public partial class EntranceWindow : Window {
         LoginButton = this.FindControl<Button>("LoginButton");
         ForgotButton = this.FindControl<Button>("ForgotButton");
     }
-
-    readonly IAssetLoader _assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!;
     
-    void OnInitialized(object? sender, EventArgs e) {
-        Background = WindowExtensions.RandomBackground();
-    }
+    void OnInitialized(object? sender, EventArgs e) => Background = WindowExtensions.RandomBackground();
 
     void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
         if (e.Pointer.IsPrimary)
             BeginMoveDrag(e);
     }
 
-    void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) {
-        WindowState = WindowState.Minimized;
-    }
+    void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
-    void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) {
-        Button button = (Button)sender!;
-
-        Image leaveButtonImage = new() {
-            Source = new SvgImage {
-                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Normal.svg"))
-            }
-        };
-
-        button.Content = leaveButtonImage;
-    }
-
-    void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) {
-        Button button = (Button)sender!;
-
-        Image enterButtonImage = new() {
-            Source = new SvgImage {
-                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Minimize_Pressed.svg"))
-            }
-        };
-
-        button.Content = enterButtonImage;
-    }
-
-    void CloseButton_OnClick(object? sender, RoutedEventArgs e) {
-        Close();
-    }
-
-    void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) {
-        Button button = (Button)sender!;
-
-        Image enterButtonImage = new() {
-            Source = new SvgImage {
-                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Pressed.svg"))
-            }
-        };
-
-        button.Content = enterButtonImage;
-    }
-
-    void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) {
-        Button button = (Button)sender!;
-
-        Image leaveButtonImage = new() {
-            Source = new SvgImage {
-                Source = SvgSource.Load<SvgSource>("", new Uri("avares://EELauncher/Assets/Close_Normal.svg"))
-            }
-        };
-
-        button.Content = leaveButtonImage;
-    }
-
-    void NicknameField_OnGotFocus(object? sender, GotFocusEventArgs e) {
-        ((TextBox)sender!).RemovePlaceholder("Никнейм", false);
-    }
-
-    void NicknameField_OnLostFocus(object? sender, RoutedEventArgs e) {
-        ((TextBox)sender!).AddPlaceholder("Никнейм", false);
-    }
-
-    void PasswordField_OnGotFocus(object? sender, GotFocusEventArgs e) {
-        ((TextBox)sender!).RemovePlaceholder("Пароль", true);
-    }
-
-    void PasswordField_OnLostFocus(object? sender, RoutedEventArgs e) {
-        ((TextBox)sender!).AddPlaceholder("Пароль", true);
-    }
+    void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
+        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Pressed.svg");
     
+    void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
+        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Normal.svg");
+
+    void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
+        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Pressed.svg");
+
+    void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
+        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Normal.svg");
+    
+    void CloseButton_OnClick(object? sender, RoutedEventArgs e) => Close();
+    
+    void NicknameField_OnGotFocus(object? sender, GotFocusEventArgs e) => 
+        ((TextBox)sender!).RemovePlaceholder(Nickname, false);
+
+    void NicknameField_OnLostFocus(object? sender, RoutedEventArgs e) => 
+        ((TextBox)sender!).AddPlaceholder(Nickname, false);
+
+    void PasswordField_OnGotFocus(object? sender, GotFocusEventArgs e) =>
+        ((TextBox)sender!).RemovePlaceholder(Password, true);
+
+    void PasswordField_OnLostFocus(object? sender, RoutedEventArgs e) => 
+        ((TextBox)sender!).AddPlaceholder(Password, true);
+
     void LoginButton_OnClick(object? sender, RoutedEventArgs e) {
         MessageBoxStandardParams mBoxParams = new() {
+            ContentTitle = "Ошибка",
             WindowIcon = Icon,
             Icon = MessageBox.Avalonia.Enums.Icon.Question,
             ShowInCenter = true,
             WindowStartupLocation = WindowStartupLocation.CenterScreen
         };
         
-        if (NicknameField?.Text is null or "Никнейм" || PasswordField?.Text is null or "Пароль") {
-            mBoxParams.ContentTitle = "Ошибка";
+        if (NicknameField?.Text is null or Nickname || PasswordField?.Text is null or Password) {
             mBoxParams.ContentMessage = "Заполните все поля";
             
             MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
@@ -153,7 +106,7 @@ public partial class EntranceWindow : Window {
         List<KeyValuePair<string, string>> authData = new() {
             KeyValuePair.Create<string, string>("username", NicknameField.Text),
             KeyValuePair.Create<string, string>("password", PasswordField.Text),
-            KeyValuePair.Create<string, string>("clientToken", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+            KeyValuePair.Create<string, string>("clientToken", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
             KeyValuePair.Create<string, string>("requestUser", "true")
         };
 
@@ -162,7 +115,6 @@ public partial class EntranceWindow : Window {
         StaticData.Password = PasswordField.Text;
 
         if (data.accessToken == null || data.selectedProfile.name == null) {
-            mBoxParams.ContentTitle = "Ошибка";
             mBoxParams.ContentMessage = "Неверные данные";
 
             MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
@@ -173,13 +125,9 @@ public partial class EntranceWindow : Window {
         Close();
     }
 
-    void ForgotButton_OnClick(object? sender, RoutedEventArgs e) {
-        "https://account.ely.by/forgot-password".OpenUrl();
-    }
+    void ForgotButton_OnClick(object? sender, RoutedEventArgs e) => "https://account.ely.by/forgot-password".OpenUrl();
 
-    void NotRegistered_OnClick(object? sender, RoutedEventArgs e) {
-        "https://account.ely.by/register".OpenUrl();
-    }
+    void NotRegistered_OnClick(object? sender, RoutedEventArgs e) => "https://account.ely.by/register".OpenUrl();
 
     void OnClosing(object? sender, CancelEventArgs e) {
         if (!StaticData.Data.Equals(new ElybyAuthData())) return;
