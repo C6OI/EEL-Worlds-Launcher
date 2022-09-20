@@ -117,7 +117,10 @@ namespace EELauncher.Views {
 
         async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
             List<Control> disabled = new() { PlayButton, SettingsButton };
+            List<Control> progressBars = new() { DownloadProgress, DownloadInfo };
+            
             disabled.ForEach(c => c.IsEnabled = false);
+            progressBars.ForEach(c => c.IsVisible = true);
 
             _launcher.FileChanged += a => {
                 DownloadProgress.Maximum = a.TotalFileCount;
@@ -172,6 +175,7 @@ namespace EELauncher.Views {
                 Dispatcher.UIThread.InvokeAsync(() => {
                     DownloadProgress.Value = 0;
                     DownloadInfo.Text = "";
+                    progressBars.ForEach(c => c.IsVisible = false);
                     disabled.ForEach(c => c.IsEnabled = true);
                     Show();
                 });

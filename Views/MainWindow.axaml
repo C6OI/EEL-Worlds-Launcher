@@ -138,14 +138,16 @@
                          VerticalAlignment="Bottom"
                          Height="20"
                          CornerRadius="0"
-                         Name="DownloadProgress"/>
+                         Name="DownloadProgress"
+                         IsVisible="False"/>
             
             <TextBlock Grid.Column="0"
                        VerticalAlignment="Bottom"
                        HorizontalAlignment="Center"
                        Padding="0, 0, 0, 1"
                        FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
-                       Name="DownloadInfo"/>
+                       Name="DownloadInfo"
+                       IsVisible="False"/>
 
             <Grid Grid.Column="1"
                   RowDefinitions="10, 50,
