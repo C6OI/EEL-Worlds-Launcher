@@ -122,6 +122,8 @@ namespace EELauncher.Views {
         void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
             ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Normal.svg");
 
+        void SettingsButton_OnClick(object? sender, RoutedEventArgs e) => new SettingsWindow().Show(this);
+
         void SiteButton_OnClick(object? sender, RoutedEventArgs e) => "https://eelworlds.ml/".OpenUrl();
 
         void DiscordButton_OnClick(object? sender, RoutedEventArgs e) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();

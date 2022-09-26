@@ -59,8 +59,7 @@ public partial class EntranceWindow : Window {
     void OnInitialized(object? sender, EventArgs e) => Background = WindowExtensions.RandomBackground();
 
     void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-        if (e.Pointer.IsPrimary)
-            BeginMoveDrag(e);
+        if (e.Pointer.IsPrimary) BeginMoveDrag(e);
     }
 
     void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;

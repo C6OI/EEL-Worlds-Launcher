@@ -212,7 +212,8 @@
                         BorderThickness="0"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        VerticalAlignment="Bottom">
+                        VerticalAlignment="Bottom"
+                        Click="SettingsButton_OnClick">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/Settings.svg}" />
 

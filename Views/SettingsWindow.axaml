@@ -3,15 +3,74 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:EELauncher.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="480"
         x:Class="EELauncher.Views.SettingsWindow"
-        Title="SettingsWindow">
+        Icon="/Assets/Cube.ico"
+        Title="Settings"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        SystemDecorations="BorderOnly"
+        Tag="EELauncher 1.1">
     
     <Design.DataContext>
-
         <vm:SettingsWindowViewModel />
-
     </Design.DataContext>
     
-    Welcome to Avalonia!
+    <Grid RowDefinitions="40, *">
+        
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
+              Background="#1a1a1a"
+              Name="Header"
+              PointerPressed="Header_OnPointerPressed">
+
+            <TextBlock Grid.Column="0" Name="LauncherName"
+                       Foreground="#FFFFFF"
+                       HorizontalAlignment="Left"
+                       Padding="10, 12"
+                       FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
+                       FontSize="14"
+                       Focusable="False"/>
+
+            <Grid Grid.Column="1"
+                  ColumnDefinitions="42, 42"
+                  HorizontalAlignment="Right">
+
+                <Button Grid.Column="0"
+                        Name="MinimizeButton"
+                        Click="MinimizeButton_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="-4"
+                        HorizontalAlignment="Right"
+                        PointerEnter="MinimizeButton_OnPointerEnter"
+                        PointerLeave="MinimizeButton_OnPointerLeave">
+
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Minimize_Normal.svg}"/>
+
+                </Button>
+
+                <Button Grid.Column="1"
+                        Name="CloseButton"
+                        Click="CloseButton_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="-4"
+                        HorizontalAlignment="Right"
+                        PointerEnter="CloseButton_OnPointerEnter"
+                        PointerLeave="CloseButton_OnPointerLeave">
+
+                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}"/>
+
+                </Button>
+
+            </Grid>
+
+        </Grid>
+        
+        <TextBlock Grid.Row="1">НАСТРОЕК НЕТ ИГРАЙ ТАК</TextBlock>
+        
+    </Grid>
+    
 </Window>
