@@ -1,29 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using Avalonia.Svg.Skia;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using Newtonsoft.Json;
-using Svg.Skia;
 
 namespace EELauncher.Views; 
 
 public partial class EntranceWindow : Window {
     const string Nickname = "Никнейм";
     const string Password = "Пароль";
+    readonly MessageBoxStandardParams _mBoxParams;
     
     public EntranceWindow() {
+        _mBoxParams = new MessageBoxStandardParams {
+            ContentTitle = "Ошибка",
+            WindowIcon = Icon,
+            Icon = MessageBox.Avalonia.Enums.Icon.Question,
+            ShowInCenter = true,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen
+        };
+        
         InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
@@ -36,8 +40,8 @@ public partial class EntranceWindow : Window {
         
         ClientSize = new Size(960, 540);
         LauncherName.Text = Tag!.ToString();
-        NicknameField.Text = "Никнейм";
-        PasswordField.Text = "Пароль";
+        NicknameField.Text = Nickname;
+        PasswordField.Text = Password;
     }
 
     void WireControls() {
@@ -88,18 +92,10 @@ public partial class EntranceWindow : Window {
         ((TextBox)sender!).AddPlaceholder(Password, true);
 
     void LoginButton_OnClick(object? sender, RoutedEventArgs e) {
-        MessageBoxStandardParams mBoxParams = new() {
-            ContentTitle = "Ошибка",
-            WindowIcon = Icon,
-            Icon = MessageBox.Avalonia.Enums.Icon.Question,
-            ShowInCenter = true,
-            WindowStartupLocation = WindowStartupLocation.CenterScreen
-        };
-        
         if (NicknameField?.Text is null or Nickname || PasswordField?.Text is null or Password) {
-            mBoxParams.ContentMessage = "Заполните все поля";
+            _mBoxParams.ContentMessage = "Заполните все поля";
             
-            MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
+            MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).Show();
             return;
         }
         
@@ -110,16 +106,16 @@ public partial class EntranceWindow : Window {
             KeyValuePair.Create<string, string>("requestUser", "true")
         };
 
-        ElybyAuthData data = JsonConvert.DeserializeObject<ElybyAuthData>(UrlExtensions.PostRequest("https://authserver.ely.by/auth/authenticate", authData));
-        StaticData.Data = data;
-        StaticData.Password = PasswordField.Text;
+        StaticData.Data = JsonConvert.DeserializeObject<ElybyAuthData>(UrlExtensions.PostRequest("https://authserver.ely.by/auth/authenticate", authData));
 
-        if (data.accessToken == null || data.selectedProfile.name == null) {
-            mBoxParams.ContentMessage = "Неверные данные";
+        if (StaticData.Data.Equals(default(ElybyAuthData))) {
+            _mBoxParams.ContentMessage = "Неверные данные";
 
-            MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
+            MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).Show();
             return;
         }
+        
+        StaticData.Password = PasswordField.Text;
         
         new MainWindow().Show();
         Close();
@@ -130,7 +126,7 @@ public partial class EntranceWindow : Window {
     void NotRegistered_OnClick(object? sender, RoutedEventArgs e) => "https://account.ely.by/register".OpenUrl();
 
     void OnClosing(object? sender, CancelEventArgs e) {
-        if (!StaticData.Data.Equals(new ElybyAuthData())) return;
+        if (!StaticData.Data.Equals(default(ElybyAuthData))) return;
         try { Program.ReleaseMemory(); } finally { Environment.Exit(0); }
     }
 }

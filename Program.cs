@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using MessageBox.Avalonia;
-using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 
@@ -14,13 +13,13 @@ namespace EELauncher {
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
 
-        static Mutex _mutex = new(false, "EELauncher");
+        static readonly Mutex Mutex = new(false, "EELauncher");
         static bool _taken;
         
         [STAThread]
         public static void Main(string[] args) { 
             AppDomain.CurrentDomain.UnhandledException += ExceptionHandler;
-            
+
             if (TakeMemory())
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
             else {
@@ -39,14 +38,14 @@ namespace EELauncher {
                 ShowInCenter = true,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
-            
-            if (MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show().IsCompleted) Environment.Exit(0);
+
+            MessageBoxManager.GetMessageBoxStandardWindow(mBoxParams).Show();
         }
 
-        static bool TakeMemory() => _taken = _mutex.WaitOne(0, true);
+        static bool TakeMemory() => _taken = Mutex.WaitOne(0, true);
 
         public static void ReleaseMemory() {
-            if (_taken) try { _mutex.ReleaseMutex(); } catch {/**/}
+            if (_taken) try { Mutex.ReleaseMutex(); } catch {/**/}
         }
         
         // Avalonia configuration, don't remove; also used by visual designer.

@@ -1,5 +1,3 @@
 ﻿namespace EELauncher.ViewModels; 
 
-public class EntranceWindowViewModel : ViewModelBase {
-    
-}
+public class EntranceWindowViewModel : ViewModelBase { }

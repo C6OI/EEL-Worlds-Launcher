@@ -10,9 +10,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
@@ -21,27 +18,53 @@ using CmlLib.Core.Version;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
-using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 
 namespace EELauncher.Views {
     public partial class MainWindow : Window {
         const string FabricVersion = "fabric-loader-0.14.9-1.19.2";
+        readonly string _injector;
         readonly EELauncherPath _pathToMinecraft = new();
-        readonly CMLauncher _launcher;
         readonly FabricVersionLoader _fabricLoader = new();
-        Process _minecraftProcess = null!;
-        MessageBoxStandardParams _notFound;
+        readonly MessageBoxStandardParams _notFound;
+        readonly CMLauncher _launcher;
+        readonly MSession _session;
+        readonly MVersionMetadata _version;
+        readonly List<Control> _disabled;
+        readonly List<Control> _progressBars;
+        Process? _minecraftProcess;
         
         public MainWindow() {
             AppDomain.CurrentDomain.DomainUnload += Unloading;
+            
             _launcher = new CMLauncher(_pathToMinecraft);
+            _injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
+
+            ElybyAuthData data = StaticData.Data;
+            SelectedProfile profile = data.selectedProfile;
+
+            _session = new MSession(profile.name, data.accessToken, profile.id) { ClientToken = data.clientToken };
+            
+            MVersionCollection versions = _fabricLoader.GetVersionMetadatas();
+            _version = versions.GetVersionMetadata(FabricVersion);
+            
+            ServicePointManager.DefaultConnectionLimit = 256;
 
             InitializeComponent();
-            ClientSize = new Size(960, 540);
-            ServicePointManager.DefaultConnectionLimit = 256;
             
+            _disabled = new List<Control> { PlayButton, SettingsButton };
+            _progressBars = new List<Control> { DownloadProgress, DownloadInfo };
+            
+            ClientSize = new Size(960, 540);
+            LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.selectedProfile.name}";
+            
+            _launcher.FileChanged += a => {
+                DownloadProgress.Maximum = a.TotalFileCount;
+                DownloadProgress.Value = a.ProgressedFileCount;
+
+                DownloadInfo.Text = a.FileName != "" ? $"Скачивается: {a.FileName}" : $"{a.ProgressedFileCount}/{a.TotalFileCount}";
+            };
+
             _notFound = new MessageBoxStandardParams {
                 ContentTitle = "404 Not Found",
                 WindowIcon = Icon,
@@ -49,10 +72,8 @@ namespace EELauncher.Views {
                 ShowInCenter = true,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
-
-            LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.selectedProfile.name}";
         }
-
+        
         void OnInitialized(object? sender, EventArgs e) => Background = WindowExtensions.RandomBackground();
 
         void Unloading(object? sender, EventArgs e) {
@@ -64,7 +85,7 @@ namespace EELauncher.Views {
             UrlExtensions.PostRequest("https://authserver.ely.by/auth/invalidate", data);
 
             try {
-                _minecraftProcess.Close();
+                _minecraftProcess!.Close();
                 Program.ReleaseMemory();
             } catch { /**/ }
         }
@@ -116,48 +137,23 @@ namespace EELauncher.Views {
         }
 
         async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
-            List<Control> disabled = new() { PlayButton, SettingsButton };
-            List<Control> progressBars = new() { DownloadProgress, DownloadInfo };
-            
-            disabled.ForEach(c => c.IsEnabled = false);
-            progressBars.ForEach(c => c.IsVisible = true);
+            _disabled.ForEach(c => c.IsEnabled = false);
+            _progressBars.ForEach(c => c.IsVisible = true);
 
-            _launcher.FileChanged += a => {
-                DownloadProgress.Maximum = a.TotalFileCount;
-                DownloadProgress.Value = a.ProgressedFileCount;
-
-                DownloadInfo.Text = a.FileName != "" ? $"Скачивается: {a.FileName}" : $"{a.ProgressedFileCount}/{a.TotalFileCount}";
-            };
-
-            MVersionCollection versions = await _fabricLoader.GetVersionMetadatasAsync();
-            MVersionMetadata version = versions.GetVersionMetadata(FabricVersion);
-            
-            await version.SaveAsync(_pathToMinecraft);
+            await _version.SaveAsync(_pathToMinecraft);
             await _launcher.GetAllVersionsAsync();
             
             CrawlPage("https://mods.eelworlds.ml");
 
             // todo: validating accessToken
-            /*List<KeyValuePair<string, string>> validateData = new() {
-                KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken)
-            };
-
-            string response = UrlExtensions.PostRequest("https://authserver.ely.by/auth/validate", validateData);*/
-
-            ElybyAuthData data = StaticData.Data;
-            SelectedProfile profile = data.selectedProfile;
-
-            MSession session = new(profile.name, data.accessToken, profile.id) { ClientToken = data.clientToken };
-
-            string injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
             
             string[] jvmArguments = {
-                $"-javaagent:{injector}=ely.by"
+                $"-javaagent:{_injector}=ely.by"
             };
 
             _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
                 MaximumRamMb = 2048,
-                Session = session,
+                Session = _session,
                 GameLauncherName = "EELauncher",
                 GameLauncherVersion = "1.1",
                 ServerIp = "minecraft.eelworlds.ml",
@@ -166,20 +162,20 @@ namespace EELauncher.Views {
                 FullScreen = true
             });
             
-            Hide();
-
             _minecraftProcess.EnableRaisingEvents = true;
-            _minecraftProcess.Start();
-
-            _minecraftProcess.Exited += (s, a) => {
+            
+            _minecraftProcess.Exited += (_, _) => {
                 Dispatcher.UIThread.InvokeAsync(() => {
                     DownloadProgress.Value = 0;
                     DownloadInfo.Text = "";
-                    progressBars.ForEach(c => c.IsVisible = false);
-                    disabled.ForEach(c => c.IsEnabled = true);
+                    _progressBars.ForEach(c => c.IsVisible = false);
+                    _disabled.ForEach(c => c.IsEnabled = true);
                     Show();
                 });
             };
+            
+            Hide();
+            _minecraftProcess.Start();
         }
 
         void LogoutButton_OnClick(object? sender, RoutedEventArgs e) {
@@ -209,33 +205,36 @@ namespace EELauncher.Views {
         void CrawlCompleted(object? sender, PageCrawlCompletedArgs e) {
             List<HyperLink>? links = e.CrawledPage.ParsedLinks?.ToList();
             
-            links?.ForEach(async f => {
-                Uri link = new(f.HrefValue.AbsoluteUri);
-                string fileName = Path.GetFileName(link.ToString());
+            links?.ForEach(CheckAndDownloadFile);
+        }
 
-                if (fileName == "") return;
+        async void CheckAndDownloadFile(HyperLink f) {
+            Uri link = new(f.HrefValue.AbsoluteUri);
+            string fileName = Path.GetFileName(link.ToString());
 
-                if (fileName.EndsWith(".jar")) {
-                    string file = Path.Combine(_pathToMinecraft.Mods, fileName);
+            if (fileName == "") return;
 
-                    if (fileName.StartsWith("authlib-injector"))
-                        file = Path.Combine(_pathToMinecraft.BasePath, fileName);
-                    
-                    if (File.Exists(file)) return;
+            if (fileName.EndsWith(".jar")) {
+                string file = Path.Combine(_pathToMinecraft.Mods, fileName);
 
-                    await UrlExtensions.DownloadFile(link, file);
-                } else if (fileName.EndsWith(".png") || fileName.EndsWith(".json")) {
-                    string file = Path.Combine(_pathToMinecraft.Emotes, fileName);
-                    if (File.Exists(file)) return;
-                    
-                    await UrlExtensions.DownloadFile(link, file);
-                } else if (fileName == "servers.dat") {
-                    string file = Path.Combine(_pathToMinecraft.BasePath, fileName);
-                    if (File.Exists(file)) return;
+                if (fileName.StartsWith("authlib-injector")) file = Path.Combine(_pathToMinecraft.BasePath, fileName);
 
-                    await UrlExtensions.DownloadFile(link, file);
-                }
-            });
+                if (File.Exists(file)) return;
+
+                await UrlExtensions.DownloadFile(link, file);
+            }
+            else if (fileName.EndsWith(".png") || fileName.EndsWith(".json")) {
+                string file = Path.Combine(_pathToMinecraft.Emotes, fileName);
+                if (File.Exists(file)) return;
+
+                await UrlExtensions.DownloadFile(link, file);
+            }
+            else if (fileName == "servers.dat") {
+                string file = Path.Combine(_pathToMinecraft.BasePath, fileName);
+                if (File.Exists(file)) return;
+
+                await UrlExtensions.DownloadFile(link, file);
+            }
         }
     }
 }
