@@ -28,7 +28,7 @@ namespace EELauncher {
             }
         }
 
-        static void ExceptionHandler(object? sender, UnhandledExceptionEventArgs e) {
+        static void ExceptionHandler(object? s, UnhandledExceptionEventArgs e) {
             MessageBoxStandardParams mBoxParams = new() {
                 ContentTitle = "Fatal error",
                 ContentMessage = "Лаунчер не может продолжить работу из-за фатальной ошибки.\n" +

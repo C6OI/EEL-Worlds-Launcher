@@ -56,41 +56,35 @@ public partial class EntranceWindow : Window {
         ForgotButton = this.FindControl<Button>("ForgotButton");
     }
     
-    void OnInitialized(object? sender, EventArgs e) => Background = WindowExtensions.RandomBackground();
+    void OnInitialized(object? s, EventArgs e) => Background = WindowExtensions.RandomBackground();
 
-    void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-        if (e.Pointer.IsPrimary) BeginMoveDrag(e);
-    }
-
-    void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Pressed.svg");
+    void OnActivated(object? s, EventArgs e) => NicknameField.Focus();
     
-    void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Normal.svg");
-
-    void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Pressed.svg");
-
-    void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Normal.svg");
+    void OnKeyDown(object? s, KeyEventArgs e) { if (e.Key == (Key.Enter | Key.Return)) LoginButton_OnClick(this, new RoutedEventArgs()); }
     
-    void CloseButton_OnClick(object? sender, RoutedEventArgs e) => Close();
+    void Header_OnPointerPressed(object? s, PointerPressedEventArgs e) { if (e.Pointer.IsPrimary) BeginMoveDrag(e); }
+
+    void MinimizeButton_OnClick(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    void MinimizeButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Pressed.svg");
     
-    void NicknameField_OnGotFocus(object? sender, GotFocusEventArgs e) => 
-        ((TextBox)sender!).RemovePlaceholder(Nickname, false);
+    void MinimizeButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Normal.svg");
 
-    void NicknameField_OnLostFocus(object? sender, RoutedEventArgs e) => 
-        ((TextBox)sender!).AddPlaceholder(Nickname, false);
+    void CloseButton_OnClick(object? s, RoutedEventArgs e) => Close();
+    
+    void CloseButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Pressed.svg");
 
-    void PasswordField_OnGotFocus(object? sender, GotFocusEventArgs e) =>
-        ((TextBox)sender!).RemovePlaceholder(Password, true);
+    void CloseButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Normal.svg");
 
-    void PasswordField_OnLostFocus(object? sender, RoutedEventArgs e) => 
-        ((TextBox)sender!).AddPlaceholder(Password, true);
+    void NicknameField_OnGotFocus(object? s, GotFocusEventArgs e) => ((TextBox)s!).RemovePlaceholder(Nickname, false);
 
-    void LoginButton_OnClick(object? sender, RoutedEventArgs e) {
+    void NicknameField_OnLostFocus(object? s, RoutedEventArgs e) => ((TextBox)s!).AddPlaceholder(Nickname, false);
+
+    void PasswordField_OnGotFocus(object? s, GotFocusEventArgs e) => ((TextBox)s!).RemovePlaceholder(Password, true);
+
+    void PasswordField_OnLostFocus(object? s, RoutedEventArgs e) => ((TextBox)s!).AddPlaceholder(Password, true);
+
+    void LoginButton_OnClick(object? s, RoutedEventArgs e) {
         if (NicknameField?.Text is null or Nickname || PasswordField?.Text is null or Password) {
             _mBoxParams.ContentMessage = "Заполните все поля";
             
@@ -120,11 +114,11 @@ public partial class EntranceWindow : Window {
         Close();
     }
 
-    void ForgotButton_OnClick(object? sender, RoutedEventArgs e) => "https://account.ely.by/forgot-password".OpenUrl();
+    void ForgotButton_OnClick(object? s, RoutedEventArgs e) => "https://account.ely.by/forgot-password".OpenUrl();
 
-    void NotRegistered_OnClick(object? sender, RoutedEventArgs e) => "https://account.ely.by/register".OpenUrl();
+    void NotRegistered_OnClick(object? s, RoutedEventArgs e) => "https://account.ely.by/register".OpenUrl();
 
-    void OnClosing(object? sender, CancelEventArgs e) {
+    void OnClosing(object? s, CancelEventArgs e) {
         if (!StaticData.Data.Equals(default(ElybyAuthData))) return;
         try { Program.ReleaseMemory(); } finally { Environment.Exit(0); }
     }

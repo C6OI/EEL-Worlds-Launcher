@@ -74,9 +74,9 @@ namespace EELauncher.Views {
             };
         }
         
-        void OnInitialized(object? sender, EventArgs e) => Background = WindowExtensions.RandomBackground();
+        void OnInitialized(object? s, EventArgs e) => Background = WindowExtensions.RandomBackground();
 
-        void Unloading(object? sender, EventArgs e) {
+        void Unloading(object? s, EventArgs e) {
             List<KeyValuePair<string, string>> data = new() {
                 KeyValuePair.Create<string, string>("accessToken", StaticData.Data.accessToken),
                 KeyValuePair.Create<string, string>("clientToken", StaticData.Data.clientToken)
@@ -90,55 +90,45 @@ namespace EELauncher.Views {
             } catch { /**/ }
         }
         
-        void NewsDescription_OnInitialized(object? sender, EventArgs e) =>
-            ((TextBlock)sender!).Text = "Скоро здесь будут новости с нашего сайта...";
+        void NewsDescription_OnInitialized(object? s, EventArgs e) => ((TextBlock)s!).Text = "Скоро здесь будут новости с нашего сайта...";
 
-        void NewsImage_OnPointerPressed(object? sender, PointerPressedEventArgs e) => 
-            "https://eelworlds.ml/news/coming-soon".OpenUrl();
+        void NewsImage_OnPointerPressed(object? s, PointerPressedEventArgs e) => "https://eelworlds.ml/news/coming-soon".OpenUrl();
 
-        void PlayButtonEnter(object? sender, PointerEventArgs e) =>
-            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Play_Button_Pressed.svg");
+        void PlayButtonEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Play_Button_Pressed.svg");
         
-        void PlayButtonLeave(object? sender, PointerEventArgs e) =>
-            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Play_Button_Normal.svg");
+        void PlayButtonLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Play_Button_Normal.svg");
 
-        void CloseButton_OnClick(object? sender, RoutedEventArgs e) => Close();
+        void CloseButton_OnClick(object? s, RoutedEventArgs e) => Close();
 
-        void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+        void MinimizeButton_OnClick(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
-        void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-            if (e.Pointer.IsPrimary) BeginMoveDrag(e);
-        }
+        void Header_OnPointerPressed(object? s, PointerPressedEventArgs e) { if (e.Pointer.IsPrimary) BeginMoveDrag(e); }
 
-        void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
-            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Normal.svg");
+        void MinimizeButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Normal.svg");
         
-        void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
-            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Pressed.svg");
+        void MinimizeButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Pressed.svg");
         
-        void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
-            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Pressed.svg");
+        void CloseButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Pressed.svg");
 
-        void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
-            ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Normal.svg");
+        void CloseButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Normal.svg");
 
-        void SettingsButton_OnClick(object? sender, RoutedEventArgs e) => new SettingsWindow().Show(this);
+        void SettingsButton_OnClick(object? s, RoutedEventArgs e) => new SettingsWindow().Show(this);
 
-        void SiteButton_OnClick(object? sender, RoutedEventArgs e) => "https://eelworlds.ml/".OpenUrl();
+        void SiteButton_OnClick(object? s, RoutedEventArgs e) => "https://eelworlds.ml/".OpenUrl();
 
-        void DiscordButton_OnClick(object? sender, RoutedEventArgs e) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();
+        void DiscordButton_OnClick(object? s, RoutedEventArgs e) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();
         
-        void YouTubeButton_OnClick(object? sender, RoutedEventArgs e) {
+        void YouTubeButton_OnClick(object? s, RoutedEventArgs e) {
             _notFound.ContentMessage = "We don't have an YouTube channel yet";
             MessageBoxManager.GetMessageBoxStandardWindow(_notFound).Show();
         }
 
-        void VkButton_OnClick(object? sender, RoutedEventArgs e) {
+        void VkButton_OnClick(object? s, RoutedEventArgs e) {
             _notFound.ContentMessage = "We don't have an VK group yet";
             MessageBoxManager.GetMessageBoxStandardWindow(_notFound).Show();
         }
 
-        async void PlayButton_OnClick(object? sender, RoutedEventArgs e) {
+        async void PlayButton_OnClick(object? s, RoutedEventArgs e) {
             _disabled.ForEach(c => c.IsEnabled = false);
             _progressBars.ForEach(c => c.IsVisible = true);
 
@@ -180,7 +170,7 @@ namespace EELauncher.Views {
             _minecraftProcess.Start();
         }
 
-        void LogoutButton_OnClick(object? sender, RoutedEventArgs e) {
+        void LogoutButton_OnClick(object? s, RoutedEventArgs e) {
             List<KeyValuePair<string, string>> data = new() {
                 KeyValuePair.Create<string, string>("username", StaticData.Data.selectedProfile.name),
                 KeyValuePair.Create<string, string>("password", StaticData.Password)
@@ -193,10 +183,7 @@ namespace EELauncher.Views {
         }
 
         async void CrawlPage(string uri) {
-            CrawlConfiguration config = new() {
-                MaxPagesToCrawl = 10,
-                MinCrawlDelayPerDomainMilliSeconds = 500
-            };
+            CrawlConfiguration config = new() { MaxPagesToCrawl = 10, MinCrawlDelayPerDomainMilliSeconds = 500 };
         
             PoliteWebCrawler crawler = new(config);
             crawler.PageCrawlCompleted += CrawlCompleted;
@@ -204,14 +191,10 @@ namespace EELauncher.Views {
             await crawler.CrawlAsync(new Uri(uri));
         }
 
-        void CrawlCompleted(object? sender, PageCrawlCompletedArgs e) {
-            List<HyperLink>? links = e.CrawledPage.ParsedLinks?.ToList();
-            
-            links?.ForEach(CheckAndDownloadFile);
-        }
+        void CrawlCompleted(object? s, PageCrawlCompletedArgs e) => e.CrawledPage.ParsedLinks?.ToList().ForEach(CheckAndDownloadFile);
 
-        async void CheckAndDownloadFile(HyperLink f) {
-            Uri link = new(f.HrefValue.AbsoluteUri);
+        async void CheckAndDownloadFile(HyperLink hyperLink) {
+            Uri link = new(hyperLink.HrefValue.AbsoluteUri);
             string fileName = Path.GetFileName(link.ToString());
 
             if (fileName == "") return;

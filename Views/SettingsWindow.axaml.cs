@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -16,26 +17,30 @@ public partial class SettingsWindow : Window {
 
     void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+        WireControls();
+        
+        ClientSize = new Size(720, 480);
+        LauncherName.Text = Tag!.ToString();
     }
 
-    void CloseButton_OnClick(object? sender, RoutedEventArgs e) => Close();
-
-    void MinimizeButton_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    void Header_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-        if (e.Pointer.IsPrimary) BeginMoveDrag(e);
+    void WireControls() {
+        Header = this.FindControl<Grid>("Header");
+        LauncherName = this.FindControl<TextBlock>("LauncherName");
+        CloseButton = this.FindControl<Button>("CloseButton");
     }
 
-    void MinimizeButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Normal.svg");
-        
-    void MinimizeButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Minimize_Pressed.svg");
-        
-    void CloseButton_OnPointerEnter(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Pressed.svg");
+    void CloseButton_OnClick(object? s, RoutedEventArgs e) => Close();
 
-    void CloseButton_OnPointerLeave(object? sender, PointerEventArgs e) =>
-        ((Button)sender!).ChangeSvgContent("avares://EELauncher/Assets/Close_Normal.svg");
+    void MinimizeButton_OnClick(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    void Header_OnPointerPressed(object? s, PointerPressedEventArgs e) { if (e.Pointer.IsPrimary) BeginMoveDrag(e); }
+
+    void MinimizeButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Normal.svg");
+        
+    void MinimizeButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Pressed.svg");
+        
+    void CloseButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Pressed.svg");
+
+    void CloseButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Normal.svg");
 }
 
