@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -7,7 +8,7 @@ using Avalonia.Platform;
 namespace EELauncher.Extensions; 
 
 public static class WindowExtensions {
-    public static IBrush RandomBackground() {
+    public static Background RandomBackground() {
         IAssetLoader assets = AvaloniaLocator.Current.GetService<IAssetLoader>()!; 
         
         string[] backgrounds = {
@@ -19,10 +20,22 @@ public static class WindowExtensions {
         Random random = new();
         string bgUri = backgrounds[random.Next(0, backgrounds.Length)];
             
-        ImageBrush bg = new(new Bitmap(assets.Open(new Uri(bgUri)))) {
+        ImageBrush brush = new(new Bitmap(assets.Open(new Uri(bgUri)))) {
             Stretch = Stretch.Fill
         };
 
-        return bg;
+        Background background = new(brush, Path.GetFileName(bgUri));
+
+        return background;
     }
+}
+
+public class Background {
+    public Background(IBrush brush, string brushName) {
+        Brush = brush;
+        BrushName = brushName;
+    }
+    
+    public IBrush Brush { get; }
+    public string BrushName { get; }
 }

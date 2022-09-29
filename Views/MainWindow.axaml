@@ -11,12 +11,10 @@
         CanResize="False"
         Initialized="OnInitialized"
         SystemDecorations="BorderOnly"
-        Tag="EELauncher 1.1">
+        Tag="EELauncher 1.2 Beta">
 
     <Design.DataContext>
-
         <vm:MainWindowViewModel />
-
     </Design.DataContext>
 
     <Grid RowDefinitions="40, *">

@@ -10,7 +10,7 @@
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         SystemDecorations="BorderOnly"
-        Tag="EELauncher 1.1">
+        Tag="EELauncher 1.2 Beta">
 
     <Design.DataContext>
         <vm:SettingsWindowViewModel />

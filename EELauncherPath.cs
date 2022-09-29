@@ -1,16 +1,20 @@
 ﻿using System;
 using System.IO;
 using CmlLib.Core;
+using EELauncher.Extensions;
+using Serilog;
 
-namespace EELauncher; 
+namespace EELauncher;
 
 public class EELauncherPath : MinecraftPath {
+    static readonly ILogger Logger = Log.Logger.ForType<EELauncherPath>();
+    
     public EELauncherPath() {
         BasePath = NormalizePath(GetOSDefaultPath());
 
         Mods = NormalizePath($"{BasePath}/mods");
         Emotes = NormalizePath($"{BasePath}/emotes");
-        
+
         Library = NormalizePath($"{BasePath}/libraries");
         Versions = NormalizePath($"{BasePath}/versions");
         Resource = NormalizePath($"{BasePath}/resources");
@@ -20,7 +24,7 @@ public class EELauncherPath : MinecraftPath {
 
         CreateDirs();
     }
-    
+
     public string Mods { get; set; }
     public string Emotes { get; set; }
 
@@ -35,23 +39,26 @@ public class EELauncherPath : MinecraftPath {
         Dir(Assets);
     }
 
-    new static string Dir(string path)
-    {
+    new static string Dir(string path) {
         string p = NormalizePath(path);
-        if (!Directory.Exists(p))
-            Directory.CreateDirectory(p);
+        if (Directory.Exists(p)) return p;
+        
+        Logger.Information($"Creating directory {p}");
+        Directory.CreateDirectory(p);
 
         return p;
     }
-    
-    public new static string GetOSDefaultPath() => MRule.OSName
-        switch {
-            "osx" => MacDefaultPath,
-            "linux" => LinuxDefaultPath,
-            "windows" => WindowsDefaultPath,
-            _ => Environment.CurrentDirectory
-        };
-    
+
+    public new static string GetOSDefaultPath() {
+        return MRule.OSName
+            switch {
+                "osx" => MacDefaultPath,
+                "linux" => LinuxDefaultPath,
+                "windows" => WindowsDefaultPath,
+                _ => Environment.CurrentDirectory
+            };
+    }
+
     public new static readonly string
         MacDefaultPath = $"{Environment.GetEnvironmentVariable("HOME")}/Library/Application Support/eelauncher",
         LinuxDefaultPath = $"{Environment.GetEnvironmentVariable("HOME")}/.eelauncher",

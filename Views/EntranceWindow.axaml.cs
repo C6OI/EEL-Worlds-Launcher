@@ -11,13 +11,15 @@ using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace EELauncher.Views; 
 
 public partial class EntranceWindow : Window {
+    static readonly ILogger Logger = Log.Logger.ForType<EntranceWindow>();
+    readonly MessageBoxStandardParams _mBoxParams;
     const string Nickname = "Никнейм";
     const string Password = "Пароль";
-    readonly MessageBoxStandardParams _mBoxParams;
     
     public EntranceWindow() {
         _mBoxParams = new MessageBoxStandardParams {
@@ -28,39 +30,31 @@ public partial class EntranceWindow : Window {
             WindowStartupLocation = WindowStartupLocation.CenterScreen
         };
         
-        InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
-    }
-
-    void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
-        WireControls();
+        InitializeComponent();
         
         ClientSize = new Size(960, 540);
         LauncherName.Text = Tag!.ToString();
         NicknameField.Text = Nickname;
         PasswordField.Text = Password;
-    }
-
-    void WireControls() {
-        Header = this.FindControl<Grid>("Header");
-        LauncherName = this.FindControl<TextBlock>("LauncherName");
-        MinimizeButton = this.FindControl<Button>("MinimizeButton");
-        CloseButton = this.FindControl<Button>("CloseButton");
-        Login = this.FindControl<Grid>("Login");
-        NicknameField = this.FindControl<TextBox>("NicknameField");
-        PasswordField = this.FindControl<TextBox>("PasswordField");
-        LoginButton = this.FindControl<Button>("LoginButton");
-        ForgotButton = this.FindControl<Button>("ForgotButton");
+        
+#if DEBUG
+            this.AttachDevTools();
+#endif
     }
     
-    void OnInitialized(object? s, EventArgs e) => Background = WindowExtensions.RandomBackground();
+    void OnInitialized(object? s, EventArgs e) {
+        Background bg = WindowExtensions.RandomBackground();
+        Background = bg.Brush;
+
+#if DEBUG
+        Logger.Debug($"Installed new background: {bg.BrushName}");
+#endif
+    }
 
     void OnActivated(object? s, EventArgs e) => NicknameField.Focus();
     
-    void OnKeyDown(object? s, KeyEventArgs e) { if (e.Key == (Key.Enter | Key.Return)) LoginButton_OnClick(this, new RoutedEventArgs()); }
+    void OnKeyDown(object? s, KeyEventArgs e) { if (e.Key is Key.Enter or Key.Return) LoginButton_OnClick(this, new RoutedEventArgs()); }
     
     void Header_OnPointerPressed(object? s, PointerPressedEventArgs e) { if (e.Pointer.IsPrimary) BeginMoveDrag(e); }
 
@@ -83,15 +77,20 @@ public partial class EntranceWindow : Window {
     void PasswordField_OnGotFocus(object? s, GotFocusEventArgs e) => ((TextBox)s!).RemovePlaceholder(Password, true);
 
     void PasswordField_OnLostFocus(object? s, RoutedEventArgs e) => ((TextBox)s!).AddPlaceholder(Password, true);
+    
+    void TogglePasswordView_OnClick(object? s, RoutedEventArgs e) {
+        throw new NotImplementedException();
+    }
 
     void LoginButton_OnClick(object? s, RoutedEventArgs e) {
         if (NicknameField?.Text is null or Nickname || PasswordField?.Text is null or Password) {
-            _mBoxParams.ContentMessage = "Заполните все поля";
+            Logger.Error("Authorization error: Nickname/Password fields are null or empty");
             
+            _mBoxParams.ContentMessage = "Заполните все поля";
             MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).Show();
             return;
         }
-        
+
         List<KeyValuePair<string, string>> authData = new() {
             KeyValuePair.Create<string, string>("username", NicknameField.Text),
             KeyValuePair.Create<string, string>("password", PasswordField.Text),
@@ -102,13 +101,16 @@ public partial class EntranceWindow : Window {
         StaticData.Data = JsonConvert.DeserializeObject<ElybyAuthData>(UrlExtensions.PostRequest("https://authserver.ely.by/auth/authenticate", authData));
 
         if (StaticData.Data.Equals(default(ElybyAuthData))) {
+            Logger.Error("Authorization error: wrong data");
+            
             _mBoxParams.ContentMessage = "Неверные данные";
-
             MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).Show();
             return;
         }
         
         StaticData.Password = PasswordField.Text;
+        
+        Logger.Information($"Authorization successful. Selected profile: {StaticData.Data.SelectedProfile}");
         
         new MainWindow().Show();
         Close();

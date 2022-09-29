@@ -14,7 +14,7 @@
         Activated="OnActivated"
         KeyDown="OnKeyDown"
         SystemDecorations="BorderOnly"
-        Tag="EELauncher 1.1">
+        Tag="EELauncher 1.2 Beta">
     
     <Design.DataContext>
         <vm:EntranceWindowViewModel/>
@@ -97,8 +97,7 @@
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                      Foreground="#FFFFFF"
                      TextWrapping="NoWrap"
-                     AcceptsReturn="False"
-                     />
+                     AcceptsReturn="False"/>
 
             <TextBox Grid.Row="2"
                      Name="PasswordField"
@@ -110,6 +109,15 @@
                      Foreground="#FFFFFF"
                      TextWrapping="NoWrap"
                      AcceptsReturn="False"/>
+            
+            <Button Grid.Row="2"
+                    Name="TogglePasswordView"
+                    HorizontalAlignment="Center"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Margin="200, 0, 0, 0"
+                    Click="TogglePasswordView_OnClick"/>
 
             <Button Grid.Row="3"
                     Name="LoginButton"

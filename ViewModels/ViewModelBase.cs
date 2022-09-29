@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
 
-namespace EELauncher.ViewModels {
-    public class ViewModelBase : ReactiveObject {}
-}
+namespace EELauncher.ViewModels; 
+
+public class ViewModelBase : ReactiveObject {}

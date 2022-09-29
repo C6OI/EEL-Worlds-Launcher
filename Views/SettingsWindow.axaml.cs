@@ -4,31 +4,24 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using EELauncher.Extensions;
+using Serilog;
 
 namespace EELauncher.Views; 
 
 public partial class SettingsWindow : Window {
+    static readonly ILogger Logger = Log.Logger.ForType<SettingsWindow>();
+    
     public SettingsWindow() {
+        AvaloniaXamlLoader.Load(this);
         InitializeComponent();
+        
+        ClientSize = new Size(720, 480);
+        LauncherName.Text = Tag!.ToString();
 #if DEBUG
         this.AttachDevTools();
 #endif
     }
-
-    void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
-        WireControls();
-        
-        ClientSize = new Size(720, 480);
-        LauncherName.Text = Tag!.ToString();
-    }
-
-    void WireControls() {
-        Header = this.FindControl<Grid>("Header");
-        LauncherName = this.FindControl<TextBlock>("LauncherName");
-        CloseButton = this.FindControl<Button>("CloseButton");
-    }
-
+    
     void CloseButton_OnClick(object? s, RoutedEventArgs e) => Close();
 
     void MinimizeButton_OnClick(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;

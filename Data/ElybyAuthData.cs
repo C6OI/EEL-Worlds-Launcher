@@ -1,40 +1,40 @@
-﻿// ReSharper disable InconsistentNaming
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-using System.Collections.Generic;
-
-namespace EELauncher.Data; 
+namespace EELauncher.Data;
 
 public struct AvailableProfile {
-    public string id { get; set; }
-    public string name { get; set; }
+    [JsonProperty("id")] public string Id { get; set; }
+    [JsonProperty("name")] public string Name { get; set; }
 }
 
 public struct Property {
-    public string name { get; set; }
-    public string value { get; set; }
+    [JsonProperty("name")] public string Name { get; set; }
+    [JsonProperty("value")] public string Value { get; set; }
 }
 
 public struct ElybyAuthData {
-    public string accessToken { get; set; }
-    public string clientToken { get; set; }
-    public List<AvailableProfile> availableProfiles { get; set; }
-    public SelectedProfile selectedProfile { get; set; }
-    public User user { get; set; }
+    [JsonProperty("accessToken")] public string AccessToken { get; set; }
+    [JsonProperty("clientToken")] public string ClientToken { get; set; }
+    [JsonProperty("availableProfiles")] public List<AvailableProfile> AvailableProfiles { get; set; }
+    [JsonProperty("selectedProfile")] public SelectedProfile SelectedProfile { get; set; }
+    [JsonProperty("user")] public User User { get; set; }
 }
 
 public struct SelectedProfile {
-    public string id { get; set; }
-    public string name { get; set; }
+    [JsonProperty("id")] public string Id { get; set; }
+    [JsonProperty("name")] public string Name { get; set; }
+
+    public override string ToString() => $"ID: {Id}, Nickname: {Name}";
 }
 
 public struct User {
-    public string id { get; set; }
-    public string username { get; set; }
-    public List<Property> properties { get; set; }
+    [JsonProperty("id")] public string Id { get; set; }
+    [JsonProperty("username")] public string Username { get; set; }
+    [JsonProperty("properties")] public List<Property> Properties { get; set; }
 }
 
 public static class StaticData {
     public static ElybyAuthData Data { get; set; }
     public static string Password { get; set; } = null!;
 }
-
