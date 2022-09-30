@@ -19,18 +19,25 @@ internal static class Program {
         
     [STAThread]
     public static void Main(string[] args) {
+        ServiceManager.Instance.Init();
+        ServiceManager.Instance.Container.Resolve<ILoggerService>().Init();
+
         AppDomain.CurrentDomain.UnhandledException += ExceptionHandler;
         AppDomain.CurrentDomain.ProcessExit += ProcessExitHandler;
         
         if (TakeMemory()) {
-            ServiceManager.Instance.Init();
-            ServiceManager.Instance.Container.Resolve<ILoggerService>().Init();
             Logger.Information("Starting launcher...");
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         } else {
+            Logger.Error("Another instance of EELauncher already running!");
+            ServiceManager.Instance.Container.Dispose();
+            ServiceManager.Instance.Dispose();
             ReleaseMemory();
             Environment.Exit(0);
         }
+        
+        ServiceManager.Instance.Container.Dispose();
+        ServiceManager.Instance.Dispose();
     }
 
     static void ExceptionHandler(object? s, UnhandledExceptionEventArgs e) =>
@@ -57,7 +64,7 @@ internal static class Program {
             return;
         }
             
-        Logger.Information("Releasing memory isn't successful because memory isn't taken");
+        Logger.Error("Releasing memory isn't successful because memory isn't taken");
     }
         
     // Avalonia configuration, don't remove; also used by visual designer.
