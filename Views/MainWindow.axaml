@@ -82,12 +82,12 @@
                            Width="275" Height="275" Margin="50" />
 
                     <Button Grid.Row="1"
+                            Name="PlayButton"
                             Width="200" Height="75"
                             HorizontalAlignment="Center"
                             PointerEnter="PlayButtonEnter"
                             PointerLeave="PlayButtonLeave"
                             CornerRadius="15"
-                            Name="PlayButton"
                             Click="PlayButton_OnClick">
 
                         <Image Source="{SvgImage /Assets/Play_Button_Normal.svg}" Stretch="Uniform" />
@@ -128,6 +128,14 @@
                                LineHeight="18"
                                FontFamily="Calibri"
                                Margin="0, -90" />
+                    
+                    <Button Grid.Row="2"
+                            Name="OpenLauncherFolder"
+                            HorizontalAlignment="Center"
+                            FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
+                            Content="Открыть папку лаунчера"
+                            CornerRadius="7"
+                            Click="OpenLauncherFolder_OnClick"/>
                     
                 </Grid>
                 

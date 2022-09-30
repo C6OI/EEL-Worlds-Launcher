@@ -19,6 +19,7 @@ using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Extensions;
 using Serilog;
 
 namespace EELauncher.Views; 
@@ -91,7 +92,7 @@ public partial class MainWindow : Window {
 
     void NewsDescription_OnInitialized(object? s, EventArgs e) => ((TextBlock)s!).Text = "Скоро здесь будут новости с нашего сайта...";
 
-    void NewsImage_OnPointerPressed(object? s, PointerPressedEventArgs e) => "https://eelworlds.ml/news/coming-soon".OpenUrl();
+    void NewsImage_OnPointerPressed(object? s, PointerPressedEventArgs e) => "https://eelworlds.ml/news/".OpenUrl();
 
     void PlayButtonEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Play_Button_Pressed.svg");
         
@@ -116,7 +117,13 @@ public partial class MainWindow : Window {
     void SiteButton_OnClick(object? s, RoutedEventArgs e) => "https://eelworlds.ml/".OpenUrl();
 
     void DiscordButton_OnClick(object? s, RoutedEventArgs e) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();
-        
+
+    // may not work on linux/macos
+    void OpenLauncherFolder_OnClick(object? s, RoutedEventArgs e) => Process.Start(new ProcessStartInfo {
+        FileName = _pathToMinecraft.BasePath,
+        UseShellExecute = true
+    });
+    
     async void YouTubeButton_OnClick(object? s, RoutedEventArgs e) {
         _notFound.ContentMessage = "We don't have an YouTube channel yet";
         await MessageBoxManager.GetMessageBoxStandardWindow(_notFound).ShowDialog(this);

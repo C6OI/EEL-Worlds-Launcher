@@ -9,6 +9,7 @@ using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Extensions;
 using Newtonsoft.Json;
 using Serilog;
 

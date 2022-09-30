@@ -57,7 +57,8 @@ public class LoggerService : ILoggerService {
             .WriteTo.File(
                 "Logs/EELauncher-.log",
                 rollingInterval: RollingInterval.Day,
-                rollOnFileSizeLimit: true
+                rollOnFileSizeLimit: true,
+                fileSizeLimitBytes: 1048576
             );
 
         Log.Logger = config.CreateLogger();
