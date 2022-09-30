@@ -57,8 +57,7 @@ public partial class MainWindow : Window {
             
         _disabled = new List<Control> { PlayButton, SettingsButton };
         _progressBars = new List<Control> { DownloadProgress, DownloadInfo };
-            
-        ClientSize = new Size(960, 540);
+        
         LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.SelectedProfile.Name}";
             
         _launcher.FileChanged += a => {
@@ -112,20 +111,20 @@ public partial class MainWindow : Window {
 
     void CloseButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Normal.svg");
 
-    void SettingsButton_OnClick(object? s, RoutedEventArgs e) => new SettingsWindow().Show(this);
+    void SettingsButton_OnClick(object? s, RoutedEventArgs e) => new SettingsWindow().ShowDialog(this);
 
     void SiteButton_OnClick(object? s, RoutedEventArgs e) => "https://eelworlds.ml/".OpenUrl();
 
     void DiscordButton_OnClick(object? s, RoutedEventArgs e) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();
         
-    void YouTubeButton_OnClick(object? s, RoutedEventArgs e) {
+    async void YouTubeButton_OnClick(object? s, RoutedEventArgs e) {
         _notFound.ContentMessage = "We don't have an YouTube channel yet";
-        MessageBoxManager.GetMessageBoxStandardWindow(_notFound).Show();
+        await MessageBoxManager.GetMessageBoxStandardWindow(_notFound).ShowDialog(this);
     }
 
-    void VkButton_OnClick(object? s, RoutedEventArgs e) {
+    async void VkButton_OnClick(object? s, RoutedEventArgs e) {
         _notFound.ContentMessage = "We don't have an VK group yet";
-        MessageBoxManager.GetMessageBoxStandardWindow(_notFound).Show();
+        await MessageBoxManager.GetMessageBoxStandardWindow(_notFound).ShowDialog(this);
     }
 
     async void PlayButton_OnClick(object? s, RoutedEventArgs e) {

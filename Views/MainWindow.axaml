@@ -11,7 +11,8 @@
         CanResize="False"
         Initialized="OnInitialized"
         SystemDecorations="BorderOnly"
-        Tag="EELauncher 1.2 Beta">
+        Tag="EELauncher 1.2 Beta"
+        ClientSize="960, 540">
 
     <Design.DataContext>
         <vm:MainWindowViewModel />

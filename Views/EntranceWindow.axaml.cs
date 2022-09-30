@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -13,13 +12,12 @@ using MessageBox.Avalonia.DTO;
 using Newtonsoft.Json;
 using Serilog;
 
-namespace EELauncher.Views; 
+namespace EELauncher.Views;
 
 public partial class EntranceWindow : Window {
     static readonly ILogger Logger = Log.Logger.ForType<EntranceWindow>();
     readonly MessageBoxStandardParams _mBoxParams;
-    const string Nickname = "Никнейм";
-    const string Password = "Пароль";
+    bool _loginHandled;
     
     public EntranceWindow() {
         _mBoxParams = new MessageBoxStandardParams {
@@ -33,12 +31,7 @@ public partial class EntranceWindow : Window {
         AvaloniaXamlLoader.Load(this);
         InitializeComponent();
         
-        ClientSize = new Size(960, 540);
         LauncherName.Text = Tag!.ToString();
-        NicknameField.Text = Nickname;
-        PasswordField.Text = Password;
-        
-        PasswordField.GetObservable(TextBox.TextProperty).Subscribe(text => TogglePasswordView.IsVisible = !TogglePasswordView.IsVisible);
         
 #if DEBUG
             this.AttachDevTools();
@@ -55,7 +48,7 @@ public partial class EntranceWindow : Window {
     }
 
     void OnActivated(object? s, EventArgs e) => NicknameField.Focus();
-    
+
     void OnKeyDown(object? s, KeyEventArgs e) { if (e.Key is Key.Enter or Key.Return) LoginButton_OnClick(this, new RoutedEventArgs()); }
     
     void Header_OnPointerPressed(object? s, PointerPressedEventArgs e) { if (e.Pointer.IsPrimary) BeginMoveDrag(e); }
@@ -72,22 +65,19 @@ public partial class EntranceWindow : Window {
 
     void CloseButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Normal.svg");
 
-    void NicknameField_OnGotFocus(object? s, GotFocusEventArgs e) => ((TextBox)s!).RemovePlaceholder(Nickname, false);
-
-    void NicknameField_OnLostFocus(object? s, RoutedEventArgs e) => ((TextBox)s!).AddPlaceholder(Nickname, false);
-
-    void PasswordField_OnGotFocus(object? s, GotFocusEventArgs e) => ((TextBox)s!).RemovePlaceholder(Password, true);
-
-    void PasswordField_OnLostFocus(object? s, RoutedEventArgs e) => ((TextBox)s!).AddPlaceholder(Password, true);
-
     void TogglePasswordView_OnClick(object? s, RoutedEventArgs e) => PasswordField.ToggleVisible('*');
-
-    void LoginButton_OnClick(object? s, RoutedEventArgs e) {
-        if (NicknameField?.Text is null or Nickname || PasswordField?.Text is null or Password) {
+    
+    async void LoginButton_OnClick(object? s, RoutedEventArgs e) {
+        if (_loginHandled) return;
+        _loginHandled = true;
+        
+        if (NicknameField?.Text is null or "" || PasswordField?.Text is null or "") {
             Logger.Error("Authorization error: Nickname/Password fields are null or empty");
             
             _mBoxParams.ContentMessage = "Заполните все поля";
-            MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).Show();
+            await MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).ShowDialog(this);
+            
+            _loginHandled = false;
             return;
         }
 
@@ -104,7 +94,8 @@ public partial class EntranceWindow : Window {
             Logger.Error("Authorization error: wrong data");
             
             _mBoxParams.ContentMessage = "Неверные данные";
-            MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).Show();
+            await MessageBoxManager.GetMessageBoxStandardWindow(_mBoxParams).ShowDialog(this);
+            _loginHandled = false;
             return;
         }
         

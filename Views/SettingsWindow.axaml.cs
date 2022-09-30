@@ -15,7 +15,6 @@ public partial class SettingsWindow : Window {
         AvaloniaXamlLoader.Load(this);
         InitializeComponent();
         
-        ClientSize = new Size(720, 480);
         LauncherName.Text = Tag!.ToString();
 #if DEBUG
         this.AttachDevTools();

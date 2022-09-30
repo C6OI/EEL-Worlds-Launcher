@@ -14,7 +14,8 @@
         Activated="OnActivated"
         KeyDown="OnKeyDown"
         SystemDecorations="BorderOnly"
-        Tag="EELauncher 1.2 Beta">
+        Tag="EELauncher 1.2 Beta"
+        ClientSize="960, 540">
     
     <Design.DataContext>
         <vm:EntranceWindowViewModel/>
@@ -92,23 +93,22 @@
             <TextBox Grid.Row="1"
                      Name="NicknameField"
                      Width="250"
-                     GotFocus="NicknameField_OnGotFocus"
-                     LostFocus="NicknameField_OnLostFocus"
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                      Foreground="#FFFFFF"
                      TextWrapping="NoWrap"
-                     AcceptsReturn="False"/>
+                     AcceptsReturn="False"
+                     Watermark="Никнейм"/>
 
             <TextBox Grid.Row="2"
                      Name="PasswordField"
                      Width="250"
                      Margin="10"
-                     GotFocus="PasswordField_OnGotFocus"
-                     LostFocus="PasswordField_OnLostFocus"
                      FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                      Foreground="#FFFFFF"
                      TextWrapping="NoWrap"
-                     AcceptsReturn="False"/>
+                     AcceptsReturn="False"
+                     Watermark="Пароль"
+                     PasswordChar="*"/>
             
             <Button Grid.Row="2"
                     Name="TogglePasswordView"
@@ -116,7 +116,6 @@
                     BorderThickness="0"
                     Background="Transparent"
                     BorderBrush="Transparent"
-                    IsVisible="False"
                     Focusable="False"
                     Margin="200, 0, 0, 0"
                     Click="TogglePasswordView_OnClick"/>
