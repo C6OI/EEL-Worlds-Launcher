@@ -68,7 +68,7 @@ public partial class MainWindow : Window {
             DownloadInfo.Text = a.FileName != "" ? $"Скачивается: {a.FileName}" : $"{a.ProgressedFileCount}/{a.TotalFileCount}";
 
 #if DEBUG
-            Logger.Debug($"Downloading file {fileName}, {progressedFileCount}/{totalFileCount}");
+            Logger.Debug($"Downloading file {a.FileName}, {a.ProgressedFileCount}/{a.TotalFileCount}");
 #endif
         };
 

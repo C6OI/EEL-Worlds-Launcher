@@ -38,6 +38,8 @@ public partial class EntranceWindow : Window {
         NicknameField.Text = Nickname;
         PasswordField.Text = Password;
         
+        PasswordField.GetObservable(TextBox.TextProperty).Subscribe(text => TogglePasswordView.IsVisible = !TogglePasswordView.IsVisible);
+        
 #if DEBUG
             this.AttachDevTools();
 #endif
@@ -77,10 +79,8 @@ public partial class EntranceWindow : Window {
     void PasswordField_OnGotFocus(object? s, GotFocusEventArgs e) => ((TextBox)s!).RemovePlaceholder(Password, true);
 
     void PasswordField_OnLostFocus(object? s, RoutedEventArgs e) => ((TextBox)s!).AddPlaceholder(Password, true);
-    
-    void TogglePasswordView_OnClick(object? s, RoutedEventArgs e) {
-        throw new NotImplementedException();
-    }
+
+    void TogglePasswordView_OnClick(object? s, RoutedEventArgs e) => PasswordField.ToggleVisible('*');
 
     void LoginButton_OnClick(object? s, RoutedEventArgs e) {
         if (NicknameField?.Text is null or Nickname || PasswordField?.Text is null or Password) {

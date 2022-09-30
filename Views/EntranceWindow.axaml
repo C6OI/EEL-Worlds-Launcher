@@ -116,6 +116,8 @@
                     BorderThickness="0"
                     Background="Transparent"
                     BorderBrush="Transparent"
+                    IsVisible="False"
+                    Focusable="False"
                     Margin="200, 0, 0, 0"
                     Click="TogglePasswordView_OnClick"/>
 
