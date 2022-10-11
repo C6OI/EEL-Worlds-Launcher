@@ -3,7 +3,6 @@ using EELauncher.Extensions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Templates;
 using Serilog.Templates.Themes;
 
 namespace EELauncher.Services;

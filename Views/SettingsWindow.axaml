@@ -21,10 +21,10 @@
 
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
               Background="#1a1a1a"
-              Name="Header"
-              PointerPressed="Header_OnPointerPressed">
+              Name="Header">
 
-            <TextBlock Grid.Column="0" Name="LauncherName"
+            <TextBlock Grid.Column="0"
+                       Name="LauncherName"
                        Foreground="#FFFFFF"
                        HorizontalAlignment="Left"
                        Padding="10, 12"
@@ -32,26 +32,22 @@
                        FontSize="14"
                        Focusable="False" />
 
-            <Grid Grid.Column="1"
-                  ColumnDefinitions="42"
-                  HorizontalAlignment="Right">
+            <Button Grid.Column="1"
+                    Name="CloseButton"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Padding="-4"
+                    HorizontalAlignment="Right">
 
-                <Button Name="CloseButton"
-                        Click="CloseButton_OnClick"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Padding="-4"
-                        HorizontalAlignment="Right"
-                        PointerEnter="CloseButton_OnPointerEnter"
-                        PointerLeave="CloseButton_OnPointerLeave">
+                <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}" />
 
-                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}" />
+            </Button>
 
-                </Button>
+        </Grid>
 
-            </Grid>
-
+        <Grid Grid.Row="1">
+            
         </Grid>
 
     </Grid>

@@ -1,38 +1,32 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using EELauncher.Extensions;
+using Hardware.Info;
 using Serilog;
 
 namespace EELauncher.Views; 
 
 public partial class SettingsWindow : Window {
     static readonly ILogger Logger = Log.Logger.ForType<SettingsWindow>();
-    
+    static readonly IHardwareInfo HardwareInfo = new HardwareInfo();
+
     public SettingsWindow() {
+        HardwareInfo.RefreshMemoryStatus();
+        MemoryStatus memoryStatus = HardwareInfo.MemoryStatus;
+        uint ramMiB = (uint)(memoryStatus.TotalPhysical / 1024 / 1024);
+
+        if (ramMiB % 2 != 0) ramMiB += 1;
+
         AvaloniaXamlLoader.Load(this);
         InitializeComponent();
         
+        Header.PointerPressed += (_, e) => { if (e.Pointer.IsPrimary) BeginMoveDrag(e); };
+        
+        CloseButton.PointerEnter += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
+        CloseButton.PointerLeave += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
+        CloseButton.Click += (_, _) => Close();
+        
         LauncherName.Text = Tag!.ToString();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
-    
-    void CloseButton_OnClick(object? s, RoutedEventArgs e) => Close();
-
-    void MinimizeButton_OnClick(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    void Header_OnPointerPressed(object? s, PointerPressedEventArgs e) { if (e.Pointer.IsPrimary) BeginMoveDrag(e); }
-
-    void MinimizeButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Normal.svg");
-        
-    void MinimizeButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Minimize_Pressed.svg");
-        
-    void CloseButton_OnPointerEnter(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Pressed.svg");
-
-    void CloseButton_OnPointerLeave(object? s, PointerEventArgs e) => ((Button)s!).ChangeSvgContent("Close_Normal.svg");
 }
 

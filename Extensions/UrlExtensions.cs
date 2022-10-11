@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using EELauncher.Data;
 using Serilog;
 
 namespace EELauncher.Extensions;
@@ -11,17 +13,27 @@ namespace EELauncher.Extensions;
 public static class UrlExtensions {
     static readonly ILogger Logger = Log.Logger.ForType(typeof(UrlExtensions));
     
-    public static async Task<HttpResponseMessage> GetRequest(Uri uri) {
-        using (HttpClient httpClient = new())
-            return await httpClient.GetAsync(uri);
-    }
+    public static async Task<BaseData> JsonHttpRequest(string uri, HttpMethod httpMethod, Dictionary<string, string>? urlData) {
+        HttpRequestMessage httpRequestMessage = new() {
+            Method = httpMethod,
+            RequestUri = new Uri(uri),
+            Headers = {
+                { HttpRequestHeader.Accept.ToString(), "application/json" },
+                { HttpRequestHeader.ContentType.ToString(), "application/json" }
+            }
+        };
 
-    public static string PostRequest(string uri, IEnumerable<KeyValuePair<string, string>> data) {
+        if (urlData != null) httpRequestMessage.Content = new FormUrlEncodedContent(urlData);
+
         using (HttpClient httpClient = new()) {
-            HttpContent content = new FormUrlEncodedContent(data);
-            HttpResponseMessage responseMessage = httpClient.PostAsync(uri, content).Result;
+            HttpResponseMessage responseMessage = await httpClient.SendAsync(httpRequestMessage);
 
-            return responseMessage.Content.ReadAsStringAsync().Result;
+            BaseData responseData = new() {
+                IsOk = responseMessage.IsSuccessStatusCode,
+                Data = responseMessage.Content
+            };
+
+            return responseData;
         }
     }
 
@@ -29,13 +41,14 @@ public static class UrlExtensions {
         string decodedPath = HttpUtility.UrlDecode(path);
         
         if (File.Exists(decodedPath)) return;
+
+        BaseData response = await JsonHttpRequest(uri.ToString(), HttpMethod.Get, null);
         
-        HttpResponseMessage response = await GetRequest(uri);
         string fileName = Path.GetFileName(decodedPath);
 
         try {
             await using (FileStream fileStream = new(decodedPath, FileMode.CreateNew)) {
-                await response.Content.CopyToAsync(fileStream);
+                await response.Data.CopyToAsync(fileStream);
                 
 #if DEBUG
                 Logger.Debug($"Downloaded file {fileName} from {uri}");

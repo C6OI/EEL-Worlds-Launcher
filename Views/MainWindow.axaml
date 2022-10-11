@@ -9,7 +9,6 @@
         Title="EEL Worlds 3"
         WindowStartupLocation="CenterScreen"
         CanResize="False"
-        Initialized="OnInitialized"
         SystemDecorations="BorderOnly"
         Tag="EELauncher 1.2 Beta"
         ClientSize="960, 540">
@@ -22,8 +21,7 @@
 
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
               Background="#1a1a1a"
-              Name="Header"
-              PointerPressed="Header_OnPointerPressed">
+              Name="Header">
 
             <TextBlock Grid.Column="0" Name="LauncherName"
                        Foreground="#FFFFFF"
@@ -39,14 +37,11 @@
 
                 <Button Grid.Column="0"
                         Name="MinimizeButton"
-                        Click="MinimizeButton_OnClick"
                         BorderThickness="0"
                         Background="Transparent"
                         BorderBrush="Transparent"
                         Padding="-4"
-                        HorizontalAlignment="Right"
-                        PointerEnter="MinimizeButton_OnPointerEnter"
-                        PointerLeave="MinimizeButton_OnPointerLeave">
+                        HorizontalAlignment="Right">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/Minimize_Normal.svg}"/>
 
@@ -54,14 +49,11 @@
 
                 <Button Grid.Column="1"
                         Name="CloseButton"
-                        Click="CloseButton_OnClick"
                         BorderThickness="0"
                         Background="Transparent"
                         BorderBrush="Transparent"
                         Padding="-4"
-                        HorizontalAlignment="Right"
-                        PointerEnter="CloseButton_OnPointerEnter"
-                        PointerLeave="CloseButton_OnPointerLeave">
+                        HorizontalAlignment="Right">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}"/>
 
@@ -85,8 +77,6 @@
                             Name="PlayButton"
                             Width="200" Height="75"
                             HorizontalAlignment="Center"
-                            PointerEnter="PlayButtonEnter"
-                            PointerLeave="PlayButtonLeave"
                             CornerRadius="15"
                             Click="PlayButton_OnClick">
 
@@ -111,8 +101,7 @@
                         </Carousel.PageTransition>
 
                         <Image Source="avares://EELauncher/Assets/NewsExample.png"
-                               Name="NewsImage"
-                               PointerPressed="NewsImage_OnPointerPressed" />
+                               Name="NewsImage"/>
 
                     </Carousel>
 
@@ -122,9 +111,9 @@
                                Background="#000000" Foreground="#FFFFFF"
                                Opacity="0.7"
                                TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                               Text="Скоро здесь будут новости с нашего сайта..."
                                Padding="7, 5"
                                Name="NewsDescription"
-                               Initialized="NewsDescription_OnInitialized"
                                LineHeight="18"
                                FontFamily="Calibri"
                                Margin="0, -90" />
@@ -134,8 +123,7 @@
                             HorizontalAlignment="Center"
                             FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                             Content="Открыть папку лаунчера"
-                            CornerRadius="7"
-                            Click="OpenLauncherFolder_OnClick"/>
+                            CornerRadius="7"/>
                     
                 </Grid>
                 
@@ -173,8 +161,7 @@
                         BorderThickness="0"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        Opacity="1"
-                        Click="SiteButton_OnClick">
+                        Opacity="1">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/Site.svg}"/>
 
@@ -185,8 +172,7 @@
                         BorderThickness="0"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        Opacity="1"
-                        Click="DiscordButton_OnClick">
+                        Opacity="1">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/Discord.svg}" />
 
@@ -196,8 +182,7 @@
                         Name="YouTubeButton"
                         BorderThickness="0"
                         Background="Transparent"
-                        BorderBrush="Transparent"
-                        Click="YouTubeButton_OnClick">
+                        BorderBrush="Transparent">
 
                     <Image Width="53" Height="53" Source="{SvgImage /Assets/YouTube.svg}" />
 
@@ -207,8 +192,7 @@
                         Name="VkButton"
                         BorderThickness="0"
                         Background="Transparent"
-                        BorderBrush="Transparent"
-                        Click="VkButton_OnClick">
+                        BorderBrush="Transparent">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/VK.svg}" />
 
@@ -219,8 +203,7 @@
                         BorderThickness="0"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        VerticalAlignment="Bottom"
-                        Click="SettingsButton_OnClick">
+                        VerticalAlignment="Bottom">
 
                     <Image Width="50" Height="50" Source="{SvgImage /Assets/Settings.svg}" />
 
