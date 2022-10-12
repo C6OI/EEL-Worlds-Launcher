@@ -19,7 +19,7 @@
 
     <Grid RowDefinitions="40, *">
 
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
+        <Grid Row="0" ColumnDefinitions="Auto, *"
               Background="#1a1a1a"
               Name="Header">
 
@@ -31,7 +31,7 @@
                        FontSize="14"
                        Focusable="False"/>
 
-            <Grid Grid.Column="1"
+            <Grid Column="1"
                   ColumnDefinitions="42, 42"
                   HorizontalAlignment="Right">
 
@@ -63,11 +63,11 @@
 
         </Grid>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*, Auto">
+        <Grid Row="1" ColumnDefinitions="*, Auto">
 
-            <Grid Grid.Column="0" ColumnDefinitions="Auto, Auto">
+            <Grid Column="0" ColumnDefinitions="Auto, Auto">
 
-                <Grid Grid.Column="0"
+                <Grid Column="0"
                       RowDefinitions="Auto, Auto">
 
                     <Image Grid.Row="0" Source="avares://EELauncher/Assets/Logo.png"
@@ -86,7 +86,7 @@
 
                 </Grid>
 
-                <Grid Grid.Column="1"
+                <Grid Column="1"
                       RowDefinitions="400, Auto, Auto">
 
                     <Carousel Grid.Row="0"
@@ -143,84 +143,83 @@
                        FontFamily="avares://EELauncher/Assets/Fonts/OpenSans-VariableFont_wdth,wght.ttf#"
                        Name="DownloadInfo"
                        IsVisible="False"/>
+            
+            <StackPanel Grid.Column="1"
+                        Spacing="111"
+                        Background="#000000"
+                        Width="60"
+                        HorizontalAlignment="Right"
+                        Opacity="0.75">
+                    
+                <StackPanel Spacing="5"
+                            VerticalAlignment="Top">
+                        
+                    <Button Name="SiteButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Opacity="1">
 
-            <Grid Grid.Column="1"
-                  RowDefinitions="10, 50,
-                                  10, 50,
-                                  10, 50,
-                                  10, 50,
-                                  145, 50,
-                                  10, 50, 5"
-                  Background="#000000"
-                  Width="60"
-                  HorizontalAlignment="Right"
-                  Opacity="0.75">
+                        <Image Width="50" Height="50" Source="{SvgImage /Assets/Site.svg}"/>
 
-                <Button Grid.Row="1"
-                        Name="SiteButton"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Opacity="1">
+                    </Button>
 
-                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Site.svg}"/>
+                    <Button Name="DiscordButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Opacity="1">
 
-                </Button>
+                        <Image Width="50" Height="50" Source="{SvgImage /Assets/Discord.svg}" />
 
-                <Button Grid.Row="3"
-                        Name="DiscordButton"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Opacity="1">
+                    </Button>
 
-                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Discord.svg}" />
+                    <Button Name="YouTubeButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent">
 
-                </Button>
+                        <Image Width="53" Height="53" Source="{SvgImage /Assets/YouTube.svg}" />
 
-                <Button Grid.Row="5"
-                        Name="YouTubeButton"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent">
+                    </Button>
 
-                    <Image Width="53" Height="53" Source="{SvgImage /Assets/YouTube.svg}" />
+                    <Button Name="VkButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent">
 
-                </Button>
+                        <Image Width="50" Height="50" Source="{SvgImage /Assets/VK.svg}" />
 
-                <Button Grid.Row="7"
-                        Name="VkButton"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent">
+                    </Button>
+                    
+                </StackPanel>
+                    
+                <StackPanel Spacing="5"
+                            VerticalAlignment="Bottom">
+                        
+                    <Button Name="SettingsButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            VerticalAlignment="Bottom">
 
-                    <Image Width="50" Height="50" Source="{SvgImage /Assets/VK.svg}" />
+                        <Image Width="50" Height="50" Source="{SvgImage /Assets/Settings.svg}" />
 
-                </Button>
+                    </Button>
 
-                <Button Grid.Row="9"
-                        Name="SettingsButton"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        VerticalAlignment="Bottom">
+                    <Button Name="LogoutButton"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Click="LogoutButton_OnClick">
 
-                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Settings.svg}" />
+                        <Image Width="50" Height="50" Source="{SvgImage /Assets/Logout.svg}" />
 
-                </Button>
-
-                <Button Grid.Row="11"
-                        Name="LogoutButton"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Click="LogoutButton_OnClick">
-
-                    <Image Width="50" Height="50" Source="{SvgImage /Assets/Logout.svg}" />
-
-                </Button>
-
-            </Grid>
+                    </Button>
+                    
+                </StackPanel>
+                    
+            </StackPanel>
 
         </Grid>
 

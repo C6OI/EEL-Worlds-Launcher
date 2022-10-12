@@ -19,7 +19,7 @@
 
     <Grid RowDefinitions="40, 200, *">
 
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
+        <Grid Row="0" ColumnDefinitions="Auto, *"
               Background="#1a1a1a"
               Name="Header">
 
@@ -31,7 +31,7 @@
                        FontSize="14"
                        Focusable="False"/>
 
-            <Grid Grid.Column="1"
+            <Grid Column="1"
                   ColumnDefinitions="42, 42"
                   HorizontalAlignment="Right">
 
@@ -67,7 +67,7 @@
         <Image Grid.Row="1" Source="avares://EELauncher/Assets/Logo_200x200.png"/>
 
         <Panel Grid.Row="2" Background="#000000" Opacity=".5"/>
-        <Grid Grid.Row="2"
+        <Grid Row="2"
               Name="Login"
               RowDefinitions="Auto, Auto, Auto, Auto, *">
 

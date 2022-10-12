@@ -2,8 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:EELauncher.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="480"
+        mc:Ignorable="d"
+        d:DesignWidth="720"
+        d:DesignHeight="480"
         x:Class="EELauncher.Views.SettingsWindow"
         Icon="/Assets/Cube.ico"
         Title="Settings"
@@ -13,13 +14,10 @@
         Tag="EELauncher 1.2 Beta"
         ClientSize="720, 480">
 
-    <Design.DataContext>
-        <vm:SettingsWindowViewModel />
-    </Design.DataContext>
-
     <Grid RowDefinitions="40, *">
 
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *"
+        <Grid Row="0"
+              ColumnDefinitions="Auto, *"
               Background="#1a1a1a"
               Name="Header">
 
@@ -30,7 +28,7 @@
                        Padding="10, 12"
                        FontFamily="avares://EELauncher/Assets/Fonts/SansSerif.ttf#"
                        FontSize="14"
-                       Focusable="False" />
+                       Focusable="False"/>
 
             <Button Grid.Column="1"
                     Name="CloseButton"
@@ -40,14 +38,103 @@
                     Padding="-4"
                     HorizontalAlignment="Right">
 
-                <Image Width="50" Height="50" Source="{SvgImage /Assets/Close_Normal.svg}" />
+                <Image Width="50"
+                       Height="50"
+                       Source="{SvgImage /Assets/Close_Normal.svg}"/>
 
             </Button>
 
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Row="1"
+              RowDefinitions="*, Auto">
+
+            <StackPanel Grid.Row="0"
+                        Spacing="20"
+                        Margin="5, 7, 0, 0">
+
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10">
+
+                    <TextBlock Text="Выделение памяти (MiB):"
+                               VerticalAlignment="Center"/>
+
+                    <NumericUpDown Name="MemoryAllocate"
+                                   Minimum="512"
+                                   Increment="256"
+                                   AllowSpin="True"
+                                   ClipValueToMinMax="True"
+                                   VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10">
+
+                    <TextBlock Text="Полноэкранный режим:"
+                               VerticalAlignment="Center"/>
+
+                    <CheckBox Name="IsFullScreen"
+                              VerticalAlignment="Center"
+                              Height="25"
+                              MinWidth="25"
+                              ToolTip.Tip="Внимание: включение этого свойства может привести к мерцанию экрана при запуске игры!"/>
+
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="5">
+
+                        <TextBox Name="ScreenWidth"
+                                 Watermark="Ширина"
+                                 Height="25"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Right"/>
+
+                        <TextBlock Text="x"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"/>
+
+                        <TextBox Name="ScreenHeight"
+                                 Watermark="Высота"
+                                 Height="25"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Left"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+                <DockPanel LastChildFill="True">
+
+                    <TextBlock Text="Аргументы JVM:"
+                               VerticalAlignment="Center"/>
+
+                    <TextBox Name="JVMArguments"
+                             VerticalAlignment="Center"
+                             TextWrapping="NoWrap"
+                             Watermark="Аргументы JVM"
+                             Margin="7, 0"
+                             ToolTip.Tip="В данный момент не работает"/>
+
+                </DockPanel>
+
+            </StackPanel>
             
+            <StackPanel Grid.Row="1"
+                        Spacing="20"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0, 5">
+
+                <Button Name="Cancel"
+                        Content="Отмена"
+                        Width="200"/>
+
+                <Button Name="Save"
+                        Content="Сохранить"
+                        Width="200"/>
+
+            </StackPanel>
+
         </Grid>
 
     </Grid>

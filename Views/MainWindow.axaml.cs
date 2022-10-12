@@ -27,10 +27,8 @@ namespace EELauncher.Views;
 public partial class MainWindow : Window {
     static readonly ILogger Logger = Log.Logger.ForType<MainWindow>();
     const string FabricVersion = "fabric-loader-0.14.9-1.19.2";
-    readonly string _injector;
     readonly EELauncherPath _pathToMinecraft = new();
     readonly FabricVersionLoader _fabricLoader = new();
-    readonly MessageBoxStandardParams _notFound;
     readonly CMLauncher _launcher;
     readonly MSession _session;
     readonly MVersionMetadata _version;
@@ -39,6 +37,9 @@ public partial class MainWindow : Window {
     Process? _minecraftProcess;
         
     public MainWindow() {
+        string optionsFile = Path.Combine(_pathToMinecraft.BasePath, "eelauncherOptions.json");
+        string injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
+
         AppDomain.CurrentDomain.DomainUnload += Unloading;
         
         Background bg = WindowExtensions.RandomBackground();
@@ -51,7 +52,7 @@ public partial class MainWindow : Window {
 #endif
         };
         
-        _notFound = new MessageBoxStandardParams {
+        MessageBoxStandardParams notFound = new() {
             ContentTitle = "404 Not Found",
             WindowIcon = Icon,
             Icon = MessageBox.Avalonia.Enums.Icon.Error,
@@ -60,7 +61,20 @@ public partial class MainWindow : Window {
         };
 
         _launcher = new CMLauncher(_pathToMinecraft);
-        _injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
+        
+        if (!File.Exists(optionsFile)) {
+            OptionsData options = new() {
+                Memory = 2048,
+                FullScreen = true,
+                JVMArguments = new[] { $"-javaagent:{injector}=ely.by" }
+            };
+            
+            StaticData.Options = options;
+            
+            File.Create(optionsFile).Close();
+            File.WriteAllText(optionsFile, JsonConvert.SerializeObject(options, Formatting.Indented));
+        } 
+        else StaticData.Options = JsonConvert.DeserializeObject<OptionsData>(File.ReadAllText(optionsFile));
 
         ElybyAuthData data = StaticData.Data;
         SelectedProfile profile = data.SelectedProfile;
@@ -89,20 +103,20 @@ public partial class MainWindow : Window {
         CloseButton.PointerLeave += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
         CloseButton.Click += (_, _) => Close();
         
-        SettingsButton.Click += (_, _) => new SettingsWindow().ShowDialog(this);
+        SettingsButton.Click += (_, _) => new SettingsWindow(optionsFile).ShowDialog(this);
         OpenLauncherFolder.Click += (_, _) => Process.Start(new ProcessStartInfo { FileName = _pathToMinecraft.BasePath, UseShellExecute = true }); // may not work on linux/macos
         
         SiteButton.Click += (_, _) => "https://eelworlds.ml/".OpenUrl();
         DiscordButton.Click += (_, _) => "https://discord.gg/Nt9chgHxQ6".OpenUrl();
         
         YouTubeButton.Click += async (_, _) => {
-            _notFound.ContentMessage = "We don't have an YouTube channel yet";
-            await MessageBoxManager.GetMessageBoxStandardWindow(_notFound).ShowDialog(this);
+            notFound.ContentMessage = "We don't have an YouTube channel yet";
+            await MessageBoxManager.GetMessageBoxStandardWindow(notFound).ShowDialog(this);
         };
         
         VkButton.Click += async (_, _) => {
-            _notFound.ContentMessage = "We don't have an VK group yet";
-            await MessageBoxManager.GetMessageBoxStandardWindow(_notFound).ShowDialog(this);
+            notFound.ContentMessage = "We don't have an VK group yet";
+            await MessageBoxManager.GetMessageBoxStandardWindow(notFound).ShowDialog(this);
         };
 
         _launcher.FileChanged += a => {
@@ -125,8 +139,6 @@ public partial class MainWindow : Window {
     async void PlayButton_OnClick(object? s, RoutedEventArgs e) {
         _disabled.ForEach(c => c.IsEnabled = false);
         _progressBars.ForEach(c => c.IsVisible = true);
-        
-        Logger.Verbose("Actions with controls completed");
 
         await _version.SaveAsync(_pathToMinecraft);
         await _launcher.GetAllVersionsAsync();
@@ -137,32 +149,32 @@ public partial class MainWindow : Window {
         
         Logger.Verbose("Custom resources downloaded");
 
-        // todo: validating AccessToken
-            
-        string[] jvmArguments = {
-            $"-javaagent:{_injector}=ely.by"
-        };
+        OptionsData options = StaticData.Options;
 
+        // todo: validating AccessToken
         _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
-            MaximumRamMb = 2048,
             Session = _session,
             GameLauncherName = "EELauncher",
             GameLauncherVersion = "1.2 Beta",
             ServerIp = "minecraft.eelworlds.ml",
             ServerPort = 8080,
-            JVMArguments = jvmArguments, 
-            FullScreen = true
+            MinimumRamMb = 512,
+            MaximumRamMb = options.Memory,
+            JVMArguments = options.JVMArguments, 
+            FullScreen = options.FullScreen,
+            ScreenWidth = options.Width,
+            ScreenHeight = options.Height,
+            JavaPath = options.JavaPath,
+            JavaVersion = options.JavaVersion,
         });
         
         Logger.Verbose("New Minecraft process created");
             
         _minecraftProcess.EnableRaisingEvents = true;
-            
+        _progressBars.ForEach(c => c.IsVisible = false);
+
         _minecraftProcess.Exited += (_, _) => {
             Dispatcher.UIThread.InvokeAsync(() => {
-                DownloadProgress.Value = 0;
-                DownloadInfo.Text = "";
-                _progressBars.ForEach(c => c.IsVisible = false);
                 _disabled.ForEach(c => c.IsEnabled = true);
                 Logger.Information("Minecraft exited");
                 Show();
