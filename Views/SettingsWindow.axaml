@@ -112,8 +112,7 @@
                              VerticalAlignment="Center"
                              TextWrapping="NoWrap"
                              Watermark="Аргументы JVM"
-                             Margin="7, 0"
-                             ToolTip.Tip="В данный момент не работает"/>
+                             Margin="7, 0"/>
 
                 </DockPanel>
 

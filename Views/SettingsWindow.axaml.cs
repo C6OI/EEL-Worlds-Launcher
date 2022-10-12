@@ -81,13 +81,17 @@ public partial class SettingsWindow : Window {
     }
     
     async void SaveChanges(CancelEventArgs e) {
+        List<string> arguments = new() { _options.JVMArguments.First() };
+        arguments.AddRange(JVMArguments.Text.Split('-', StringSplitOptions.RemoveEmptyEntries)
+            .Select(argument => $"-{argument.Trim()}"));
+
         //todo: JVMArguments, JavaPath, JavaVersion
         OptionsData newOptions = new() {
             Height = ScreenHeight.Text == "" ? 0 : int.Parse(ScreenHeight.Text),
             Width = ScreenHeight.Text == "" ? 0 : int.Parse(ScreenWidth.Text),
             Memory = int.Parse(MemoryAllocate.Text),
             FullScreen = IsFullScreen.IsChecked ?? false,
-            JVMArguments = _options.JVMArguments,
+            JVMArguments = arguments.ToArray(),
             JavaPath = _options.JavaPath,
             JavaVersion = _options.JavaVersion
         };
