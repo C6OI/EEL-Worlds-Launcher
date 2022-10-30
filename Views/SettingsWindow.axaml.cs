@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Avalonia.Controls;
+using CmlLib.Core;
 using EELauncher.Data;
 using EELauncher.Extensions;
 using Hardware.Info;
@@ -20,6 +21,7 @@ public partial class SettingsWindow : Window {
     static readonly IHardwareInfo HardwareInfo = new HardwareInfo();
     static string _optionsFile = null!;
     static OptionsData _options = StaticData.Options;
+    string? _newJavaPath;
     bool _saveClick;
     bool _withoutSaving;
 
@@ -30,9 +32,13 @@ public partial class SettingsWindow : Window {
         
         HardwareInfo.RefreshMemoryStatus();
         MemoryStatus memoryStatus = HardwareInfo.MemoryStatus;
+        List<string> arguments = _options.JVMArguments.ToList();
         uint ramMiB = (uint)(memoryStatus.TotalPhysical / 1024 / 1024);
         
         if (ramMiB % 2 != 0) ramMiB += 1;
+        arguments.RemoveAt(0);
+
+        _newJavaPath = _options.JavaPath;
         
         InitializeComponent();
 
@@ -43,13 +49,52 @@ public partial class SettingsWindow : Window {
 
         ScreenWidth.Text = _options.Width == 0 ? "" : _options.Width.ToString();
         ScreenHeight.Text = _options.Height == 0 ? "" : _options.Height.ToString();
+        
+        JVMArguments.Text = string.Join(Environment.NewLine, arguments.ToArray());
 
-        if (_options.JVMArguments != null) {
-            List<string> arguments = _options.JVMArguments.ToList();
-            arguments.RemoveAt(0);
+        CurrentJava.Text = _options.JavaPath ?? "По умолчанию";
+        
+        SelectJava.Click += async (_, _) => {
+            OpenFolderDialog newJava = new() {
+                Title = "Выберите папку с Java",
+                Directory = _options.JavaPath ?? Path.GetDirectoryName(_optionsFile)
+            };
 
-            JVMArguments.Text = string.Join(Environment.NewLine, arguments.ToArray());
-        }
+            string? javaPath = await newJava.ShowAsync(this);
+            
+            if (javaPath == null) return;
+
+            string javaFile = MRule.OSName switch {
+                "osx" => "java",
+                "linux" => "java",
+                "windows" => "javaw.exe",
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            
+            string newJavaPath = Path.Combine(javaPath, "bin", javaFile);
+
+            if (!File.Exists(newJavaPath)) {
+                MessageBoxStandardParams wrongPath = new() {
+                    ContentTitle = "Java not found",
+                    ContentMessage = $"Файл {newJavaPath} не найден.",
+                    WindowIcon = Icon,
+                    Icon = MessageBox.Avalonia.Enums.Icon.Error,
+                    ShowInCenter = true,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+
+                await MessageBoxManager.GetMessageBoxStandardWindow(wrongPath).ShowDialog(this);
+                return;
+            }
+
+            _newJavaPath = newJavaPath;
+            CurrentJava.Text = newJavaPath;
+        };
+
+        ResetJava.Click += (_, _) => {
+            _newJavaPath = null;
+            CurrentJava.Text = "По умолчанию";
+        };
 
         Header.PointerPressed += (_, e) => { if (e.Pointer.IsPrimary) BeginMoveDrag(e); };
         
@@ -85,15 +130,13 @@ public partial class SettingsWindow : Window {
         arguments.AddRange(JVMArguments.Text.Split('-', StringSplitOptions.RemoveEmptyEntries)
             .Select(argument => $"-{argument.Trim()}"));
 
-        //todo: JVMArguments, JavaPath, JavaVersion
         OptionsData newOptions = new() {
             Height = ScreenHeight.Text == "" ? 0 : int.Parse(ScreenHeight.Text),
-            Width = ScreenHeight.Text == "" ? 0 : int.Parse(ScreenWidth.Text),
+            Width = ScreenWidth.Text == "" ? 0 : int.Parse(ScreenWidth.Text),
             Memory = int.Parse(MemoryAllocate.Text),
             FullScreen = IsFullScreen.IsChecked ?? false,
             JVMArguments = arguments.ToArray(),
-            JavaPath = _options.JavaPath,
-            JavaVersion = _options.JavaVersion
+            JavaPath = _newJavaPath
         };
 
         if (!_saveClick) {
@@ -130,7 +173,7 @@ public partial class SettingsWindow : Window {
                 };
 
                 string result = await MessageBoxManager.GetMessageBoxCustomWindow(changedWarningParams)
-                    .ShowDialog(this);
+                                                       .ShowDialog(this);
 
                 switch (result) {
                     case "Да":

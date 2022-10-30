@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Avalonia.Controls;
@@ -26,22 +27,23 @@ namespace EELauncher.Views;
 
 public partial class MainWindow : Window {
     static readonly ILogger Logger = Log.Logger.ForType<MainWindow>();
-    const string FabricVersion = "fabric-loader-0.14.9-1.19.2";
     readonly EELauncherPath _pathToMinecraft = new();
     readonly FabricVersionLoader _fabricLoader = new();
     readonly CMLauncher _launcher;
     readonly MSession _session;
-    readonly MVersionMetadata _version;
     readonly List<Control> _disabled;
     readonly List<Control> _progressBars;
+    LauncherData _launcherData = new();
     Process? _minecraftProcess;
-        
+
     public MainWindow() {
+        AppDomain.CurrentDomain.DomainUnload += Unloading;
+        
+        GetLauncherData();
+
         string optionsFile = Path.Combine(_pathToMinecraft.BasePath, "eelauncherOptions.json");
         string injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
 
-        AppDomain.CurrentDomain.DomainUnload += Unloading;
-        
         Background bg = WindowExtensions.RandomBackground();
 
         Initialized += (_, _) => {
@@ -73,17 +75,13 @@ public partial class MainWindow : Window {
             
             File.Create(optionsFile).Close();
             File.WriteAllText(optionsFile, JsonConvert.SerializeObject(options, Formatting.Indented));
-        } 
-        else StaticData.Options = JsonConvert.DeserializeObject<OptionsData>(File.ReadAllText(optionsFile));
+        } else StaticData.Options = JsonConvert.DeserializeObject<OptionsData>(File.ReadAllText(optionsFile));
 
         ElybyAuthData data = StaticData.Data;
         SelectedProfile profile = data.SelectedProfile;
 
         _session = new MSession(profile.Name, data.AccessToken, profile.Id) { ClientToken = data.ClientToken };
-            
-        MVersionCollection versions = _fabricLoader.GetVersionMetadatas();
-        _version = versions.GetVersionMetadata(FabricVersion);
-            
+
         ServicePointManager.DefaultConnectionLimit = 256;
 
         InitializeComponent();
@@ -136,11 +134,29 @@ public partial class MainWindow : Window {
         LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.SelectedProfile.Name}";
     }
 
+    async void GetLauncherData() {
+        BaseData launcherDataResponse = await UrlExtensions.JsonHttpRequest("https://mods.eelworlds.ml/eelauncher-data.json", HttpMethod.Get, null);
+
+        if (!launcherDataResponse.IsOk) {
+            ErrorData error = JsonConvert.DeserializeObject<ErrorData>(await launcherDataResponse.Data.ReadAsStringAsync())!;
+
+            Logger.Error(error.ToString());
+            
+            Environment.Exit(0);
+            return;
+        }
+        
+        _launcherData = JsonConvert.DeserializeObject<LauncherData>(await launcherDataResponse.Data.ReadAsStringAsync())!;
+    }
+
     async void PlayButton_OnClick(object? s, RoutedEventArgs e) {
         _disabled.ForEach(c => c.IsEnabled = false);
         _progressBars.ForEach(c => c.IsVisible = true);
+        
+        MVersionCollection versions = await _fabricLoader.GetVersionMetadatasAsync();
+        MVersionMetadata version = versions.GetVersionMetadata(_launcherData.FabricVersion);
 
-        await _version.SaveAsync(_pathToMinecraft);
+        await version.SaveAsync(_pathToMinecraft);
         await _launcher.GetAllVersionsAsync();
         
         Logger.Verbose("Minecraft files downloaded");
@@ -152,7 +168,7 @@ public partial class MainWindow : Window {
         OptionsData options = StaticData.Options;
 
         // todo: validating AccessToken
-        _minecraftProcess = await _launcher.CreateProcessAsync(FabricVersion, new MLaunchOption {
+        _minecraftProcess = await _launcher.CreateProcessAsync(_launcherData.FabricVersion, new MLaunchOption {
             Session = _session,
             GameLauncherName = "EELauncher",
             GameLauncherVersion = "1.2 Beta",
@@ -164,8 +180,7 @@ public partial class MainWindow : Window {
             FullScreen = options.FullScreen,
             ScreenWidth = options.Width,
             ScreenHeight = options.Height,
-            JavaPath = options.JavaPath,
-            JavaVersion = options.JavaVersion,
+            JavaPath = options.JavaPath
         });
         
         Logger.Verbose("New Minecraft process created");
@@ -211,18 +226,20 @@ public partial class MainWindow : Window {
 
     async void CrawlPage(string uri) {
         CrawlConfiguration config = new() { MaxPagesToCrawl = 10, MinCrawlDelayPerDomainMilliSeconds = 500 };
-        
+
         PoliteWebCrawler crawler = new(config);
         crawler.PageCrawlCompleted += (_, e) => e.CrawledPage.ParsedLinks?.ToList().ForEach(CheckAndDownloadFile);
 
         await crawler.CrawlAsync(new Uri(uri));
     }
 
+    //todo: rewrite this shitcode
     async void CheckAndDownloadFile(HyperLink hyperLink) {
         Uri link = new(hyperLink.HrefValue.AbsoluteUri);
         string fileName = Path.GetFileName(link.ToString());
 
         if (fileName == "") return;
+        if (fileName.StartsWith("eelauncher-data.json")) return;
 
         if (fileName.EndsWith(".jar")) {
             string filePath = Path.Combine(_pathToMinecraft.Mods, fileName);
@@ -232,14 +249,12 @@ public partial class MainWindow : Window {
             if (File.Exists(filePath)) return;
 
             await UrlExtensions.DownloadFile(link, filePath);
-        }
-        else if (fileName.EndsWith(".png") || fileName.EndsWith(".json")) {
+        } else if (fileName.EndsWith(".png") || fileName.EndsWith(".json")) {
             string filePath = Path.Combine(_pathToMinecraft.Emotes, fileName);
             if (File.Exists(filePath)) return;
 
             await UrlExtensions.DownloadFile(link, filePath);
-        }
-        else if (fileName == "servers.dat") {
+        } else if (fileName == "servers.dat") {
             string filePath = Path.Combine(_pathToMinecraft.BasePath, fileName);
             if (File.Exists(filePath)) return;
 

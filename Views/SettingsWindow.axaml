@@ -78,7 +78,8 @@
                               VerticalAlignment="Center"
                               Height="25"
                               MinWidth="25"
-                              ToolTip.Tip="Внимание: включение этого свойства может привести к мерцанию экрана при запуске игры!"/>
+                              ToolTip.Tip="Внимание: включение этого свойства может привести к мерцанию экрана при запуске игры!"
+                              ToolTip.ShowDelay="50"/>
 
                     <StackPanel Orientation="Horizontal"
                                 Spacing="5">
@@ -115,6 +116,34 @@
                              Margin="7, 0"/>
 
                 </DockPanel>
+                
+                <StackPanel Spacing="5">
+                    
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="5">
+                        
+                        <TextBlock Text="Java:"
+                                   VerticalAlignment="Center"/>
+                    
+                        <TextBlock Name="CurrentJava"
+                                   VerticalAlignment="Center"/>
+                        
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="5">
+                        
+                        <Button Name="SelectJava"
+                                VerticalAlignment="Center"
+                                Content="Выбрать Java"/>
+                    
+                        <Button Name="ResetJava"
+                                VerticalAlignment="Center"
+                                Content="Сброс"/>
+                        
+                    </StackPanel>
+                    
+                </StackPanel>
 
             </StackPanel>
             

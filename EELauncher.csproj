@@ -9,7 +9,6 @@
 	<ApplicationIcon>Assets\Cube.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
   </ItemGroup>
