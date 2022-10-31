@@ -10,7 +10,7 @@
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         SystemDecorations="BorderOnly"
-        Tag="EELauncher 1.2 Beta"
+        Tag="EELauncher 1.5"
         ClientSize="960, 540">
 
     <Design.DataContext>

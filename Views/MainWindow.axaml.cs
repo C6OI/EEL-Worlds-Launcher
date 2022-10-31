@@ -190,7 +190,7 @@ public partial class MainWindow : Window {
         _minecraftProcess = await _launcher.CreateProcessAsync(_launcherData.FabricVersion, new MLaunchOption {
             Session = _session,
             GameLauncherName = "EELauncher",
-            GameLauncherVersion = "1.2 Beta",
+            GameLauncherVersion = "1.5",
             ServerIp = "minecraft.eelworlds.ml",
             ServerPort = 8080,
             MinimumRamMb = 512,
