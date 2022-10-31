@@ -6,8 +6,8 @@ using EELauncher.ViewModels;
 namespace EELauncher; 
 
 public class ViewLocator : IDataTemplate {
-    public IControl Build(object data) {
-        string name = data.GetType().FullName!.Replace("ViewModel", "View");
+    public IControl Build(object? data) {
+        string name = data!.GetType().FullName!.Replace("ViewModel", "View");
         Type? type = Type.GetType(name);
 
         if (type != null) return (Control)Activator.CreateInstance(type)!;
@@ -15,5 +15,5 @@ public class ViewLocator : IDataTemplate {
         return new TextBlock { Text = $"Not Found: {name}" };
     }
 
-    public bool Match(object data) => data is ViewModelBase;
+    public bool Match(object? data) => data is ViewModelBase;
 }

@@ -98,8 +98,8 @@ public partial class SettingsWindow : Window {
 
         Header.PointerPressed += (_, e) => { if (e.Pointer.IsPrimary) BeginMoveDrag(e); };
         
-        CloseButton.PointerEnter += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
-        CloseButton.PointerLeave += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
+        CloseButton.PointerEntered += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
+        CloseButton.PointerExited += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
         CloseButton.Click += (_, _) => Close();
 
         Save.Click += (_, _) => {
@@ -127,20 +127,20 @@ public partial class SettingsWindow : Window {
     
     async void SaveChanges(CancelEventArgs e) {
         List<string> arguments = new() { _options.JVMArguments.First() };
-        arguments.AddRange(JVMArguments.Text.Split('-', StringSplitOptions.RemoveEmptyEntries)
+        arguments.AddRange(JVMArguments.Text!.Split('-', StringSplitOptions.RemoveEmptyEntries)
             .Select(argument => $"-{argument.Trim()}"));
 
         OptionsData newOptions = new() {
-            Height = ScreenHeight.Text == "" ? 0 : int.Parse(ScreenHeight.Text),
-            Width = ScreenWidth.Text == "" ? 0 : int.Parse(ScreenWidth.Text),
-            Memory = int.Parse(MemoryAllocate.Text),
+            Height = ScreenHeight.Text == "" ? 0 : int.Parse(ScreenHeight.Text!),
+            Width = ScreenWidth.Text == "" ? 0 : int.Parse(ScreenWidth.Text!),
+            Memory = int.Parse(MemoryAllocate.Text!),
             FullScreen = IsFullScreen.IsChecked ?? false,
             JVMArguments = arguments.ToArray(),
             JavaPath = _newJavaPath
         };
 
         if (!_saveClick) {
-            if (!newOptions.Equals(_options)) {
+            if (!Equals(newOptions, _options)) {
                 e.Cancel = true;
                 _withoutSaving = true;
                 

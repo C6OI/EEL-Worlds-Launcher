@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web;
 using EELauncher.Data;
@@ -25,7 +27,7 @@ public static class UrlExtensions {
 
         if (urlData != null) httpRequestMessage.Content = new FormUrlEncodedContent(urlData);
 
-        using (HttpClient httpClient = new()) {
+        using (HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) }) {
             HttpResponseMessage responseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             BaseData responseData = new() {
@@ -57,5 +59,21 @@ public static class UrlExtensions {
         } catch (Exception e) {
             Logger.Error($"Exception while downloading file {fileName} from {uri}: {e}");
         }
+    }
+
+    public static void OpenUrl(this string url) {
+        string decodedUrl = HttpUtility.UrlDecode(url);
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            using (Process process = new() { StartInfo = { UseShellExecute = true, FileName = decodedUrl } }) {
+                process.Start();
+            }
+        
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)){
+            try { Process.Start("xdg-open", decodedUrl); }
+            catch { Process.Start("x-www-browser", decodedUrl); }
+        }
+
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) Process.Start("open", decodedUrl);
     }
 }

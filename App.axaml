@@ -3,11 +3,13 @@
              xmlns:local="using:EELauncher"
              xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="EELauncher.App">
+    
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-
+    
     <Application.Styles>
         <sty:FluentAvaloniaTheme RequestedTheme="Dark"/>
     </Application.Styles>
+    
 </Application>

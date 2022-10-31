@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Avalonia.Controls;
@@ -19,7 +18,6 @@ using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Extensions;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -33,27 +31,27 @@ public partial class MainWindow : Window {
     readonly MSession _session;
     readonly List<Control> _disabled;
     readonly List<Control> _progressBars;
-    LauncherData _launcherData = new();
+    LauncherData _launcherData;
     Process? _minecraftProcess;
 
     public MainWindow() {
         AppDomain.CurrentDomain.DomainUnload += Unloading;
-        
-        GetLauncherData();
 
         string optionsFile = Path.Combine(_pathToMinecraft.BasePath, "eelauncherOptions.json");
         string injector = Path.Combine(_pathToMinecraft.BasePath, "authlib-injector-1.2.1.jar");
 
         Background bg = WindowExtensions.RandomBackground();
 
+        Activated += GetLauncherData;
+
         Initialized += (_, _) => {
             Background = bg.Brush;
-
+            
 #if DEBUG
             Logger.Debug($"Installed new background: {bg.BrushName}");
 #endif
         };
-        
+
         MessageBoxStandardParams notFound = new() {
             ContentTitle = "404 Not Found",
             WindowIcon = Icon,
@@ -75,7 +73,7 @@ public partial class MainWindow : Window {
             
             File.Create(optionsFile).Close();
             File.WriteAllText(optionsFile, JsonConvert.SerializeObject(options, Formatting.Indented));
-        } else StaticData.Options = JsonConvert.DeserializeObject<OptionsData>(File.ReadAllText(optionsFile));
+        } else StaticData.Options = JsonConvert.DeserializeObject<OptionsData>(File.ReadAllText(optionsFile)) ?? new OptionsData();
 
         ElybyAuthData data = StaticData.Data;
         SelectedProfile profile = data.SelectedProfile;
@@ -85,20 +83,20 @@ public partial class MainWindow : Window {
         ServicePointManager.DefaultConnectionLimit = 256;
 
         InitializeComponent();
-        
+
         Header.PointerPressed += (_, e) => { if (e.Pointer.IsPrimary) BeginMoveDrag(e); };
         
         NewsImage.PointerPressed += (_, _) => "https://eelworlds.ml/news/".OpenUrl();
 
-        PlayButton.PointerEnter += (_, _) => PlayButton.ChangeSvgContent("Play_Button_Pressed.svg");
-        PlayButton.PointerLeave += (_, _) => PlayButton.ChangeSvgContent("Play_Button_Normal.svg");
+        PlayButton.PointerEntered += (_, _) => PlayButton.ChangeSvgContent("Play_Button_Pressed.svg");
+        PlayButton.PointerExited += (_, _) => PlayButton.ChangeSvgContent("Play_Button_Normal.svg");
         
-        MinimizeButton.PointerEnter += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Pressed.svg");
-        MinimizeButton.PointerLeave += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Normal.svg");
+        MinimizeButton.PointerEntered += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Pressed.svg");
+        MinimizeButton.PointerExited += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Normal.svg");
         MinimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
         
-        CloseButton.PointerEnter += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
-        CloseButton.PointerLeave += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
+        CloseButton.PointerEntered += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
+        CloseButton.PointerExited += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
         CloseButton.Click += (_, _) => Close();
         
         SettingsButton.Click += (_, _) => new SettingsWindow(optionsFile).ShowDialog(this);
@@ -134,9 +132,28 @@ public partial class MainWindow : Window {
         LauncherName.Text = $"{Tag!}: Вы вошли как {StaticData.Data.SelectedProfile.Name}";
     }
 
-    async void GetLauncherData() {
+    async void GetLauncherData(object? _, EventArgs __) {
+        Activated -= GetLauncherData;
+        
+        if (!Updater.CanConnectToServer()) {
+            await MessageBoxManager.GetMessageBoxStandardWindow(
+                new MessageBoxStandardParams {
+                    Icon = MessageBox.Avalonia.Enums.Icon.Error,
+                    WindowIcon = Icon,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    ShowInCenter = true,
+                    ContentTitle = "Нет доступа к сети",
+                    ContentMessage = "Невозможно проверить обновления.\n" +
+                                     "Проверьте ваш антивирус/фаервол и подключение к интернету."
+                }).ShowDialog(this);
+            
+            Environment.Exit(0);
+            return;
+        }
+        
         BaseData launcherDataResponse = await UrlExtensions.JsonHttpRequest("https://mods.eelworlds.ml/eelauncher-data.json", HttpMethod.Get, null);
-
+        
         if (!launcherDataResponse.IsOk) {
             ErrorData error = JsonConvert.DeserializeObject<ErrorData>(await launcherDataResponse.Data.ReadAsStringAsync())!;
 
@@ -147,6 +164,8 @@ public partial class MainWindow : Window {
         }
         
         _launcherData = JsonConvert.DeserializeObject<LauncherData>(await launcherDataResponse.Data.ReadAsStringAsync())!;
+
+        Updater.CheckForUpdates(_launcherData.LastLauncherVersion, this);
     }
 
     async void PlayButton_OnClick(object? s, RoutedEventArgs e) {

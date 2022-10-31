@@ -9,7 +9,6 @@ using EELauncher.Data;
 using EELauncher.Extensions;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Extensions;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -47,12 +46,12 @@ public partial class EntranceWindow : Window {
         
         Header.PointerPressed += (_, e) => { if (e.Pointer.IsPrimary) BeginMoveDrag(e); };
 
-        CloseButton.PointerEnter += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
-        CloseButton.PointerLeave += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
+        CloseButton.PointerEntered += (_, _) => CloseButton.ChangeSvgContent("Close_Pressed.svg");
+        CloseButton.PointerExited += (_, _) => CloseButton.ChangeSvgContent("Close_Normal.svg");
         CloseButton.Click += (_, _) => Close();
         
-        MinimizeButton.PointerEnter += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Pressed.svg");
-        MinimizeButton.PointerLeave += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Normal.svg");
+        MinimizeButton.PointerEntered += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Pressed.svg");
+        MinimizeButton.PointerExited += (_, _) => MinimizeButton.ChangeSvgContent("Minimize_Normal.svg");
         MinimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
 
         TogglePasswordView.Click += (_, _) => PasswordField.RevealPassword = !PasswordField.RevealPassword;
